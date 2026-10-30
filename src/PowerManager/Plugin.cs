@@ -70,7 +70,7 @@ public sealed class Plugin : BasePlugin
         var store = new DeviceStore(Path.Combine(Paths.ConfigPath, DevicesFileName), log.Write);
         var session = new PanelSession(new GamePower(log.Write, isDefenseManagerLoaded), new WebPage(log.Write), config, store, log.Write);
 
-        log.Write($"===== Power Manager {Version} started, panel key {panelKey.Value}, battery {rules.BatteryMultiplier.Value:0.##}x the game's");
+        log.Write($"===== Power Manager {Version} started, panel key {panelKey.Value}, battery {(isGameRulesOld ? 1f : rules.BatteryMultiplier.Value):0.##}x the game's");
         WarnOldMods(isGameRulesOld, isMachineSpeedOld, log.Write);
         InputGate.Apply(harmony, log.Write);
         PageMessages.Apply(harmony, log.Write);
@@ -111,7 +111,7 @@ public sealed class Plugin : BasePlugin
 
         if (names.Length == 0) return;
 
-        log($"{names} is older than 0.7.0 and still has the power settings, so they are left to it until it is updated; this mod's own values for them are not used");
+        log($"{names} is older than 0.7.0 and still has the power settings, so this mod does not apply them until it is updated (an old version applies only the ones it has)");
         PowerTicker.Notice = () => Toasts.Show(new ToastRequest(Texts.Source.Pick(GameLanguage.IsChinese()), Texts.UpdateOldMods.Say(GameLanguage.IsChinese(), names)) { Kind = ToastKind.Warning });
     }
 

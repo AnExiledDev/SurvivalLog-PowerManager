@@ -87,8 +87,8 @@ public static class Texts
     public static readonly Phrase Saved = new("Setting saved.", "设置已保存。");
     public static readonly Phrase SavedAtRestart = new("Setting saved. It takes effect at the next game start.", "设置已保存，下次启动游戏时生效。");
     public static readonly Phrase UpdateOldMods = new(
-        "Update {0}. Until then, its power settings keep working there and Power Manager leaves them alone.",
-        "请更新 {0}。在此之前，它的电力设置仍在它那里生效，Power Manager 不会处理这些设置。");
+        "Update {0} to 0.7.0 or newer. Until then, Power Manager does not apply the power settings that moved to it from there.",
+        "请将 {0} 更新到 0.7.0 或更高版本。在此之前，Power Manager 不会应用从那里移过来的电力设置。");
 
     /// <summary>The words page.js draws the panel and the HUD button's tip with, by the key it looks them up by.</summary>
     public static readonly IReadOnlyList<(string Key, Phrase Phrase)> Page = new (string, Phrase)[]
