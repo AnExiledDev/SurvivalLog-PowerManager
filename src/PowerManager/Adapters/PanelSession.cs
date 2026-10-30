@@ -31,6 +31,8 @@ internal sealed class PanelSession
     private readonly Action<string> _log;
     private readonly Func<long, bool> _isRefuelling;
     private readonly Func<int, string> _itemName;
+    private readonly Func<bool> _isPanelKeyDown;
+    private static readonly Func<bool> IsTyping = () => ExiledToolkit.Typing.IsActive;
     private readonly Dictionary<int, string> _names = new();
 
     private bool? _namesInChinese;
@@ -65,6 +67,7 @@ internal sealed class PanelSession
         _run = new PowerRun(game);
         _isRefuelling = _run.IsRefuelling;
         _itemName = NameOfItem;
+        _isPanelKeyDown = () => Input.GetKeyDown(_config.PanelKey);
     }
 
     private static string FailedStatus => Texts.Failed.Pick(GameLanguage.IsChinese());
@@ -83,7 +86,8 @@ internal sealed class PanelSession
         // One ask of Unity in a frame with no key going down, rather than one per key the panel listens for.
         var isAnyKeyDown = (panelKey != KeyCode.None || _isOpen) && Input.anyKeyDown;
 
-        if (isAnyKeyDown && panelKey != KeyCode.None && Input.GetKeyDown(panelKey))
+        // A key typed into a text box (a search, another mod's field) is the player's text, not the panel key.
+        if (isAnyKeyDown && Hotkey.Fires(panelKey != KeyCode.None, _isPanelKeyDown, IsTyping))
         {
             Toggle();
 

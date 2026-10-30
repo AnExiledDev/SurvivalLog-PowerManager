@@ -15,7 +15,7 @@ namespace PowerManagerMod;
 public sealed class Plugin : BasePlugin
 {
     private const string Guid = "com.dev.survivallog.powermanager";
-    private const string Version = "0.2.0";
+    private const string Version = "0.2.1";
     private const string DefenseManagerGuid = "com.dev.survivallog.defensemanager";
     private const string DevicesFileName = Guid + ".devices.txt";
     private const string GeneratorsSection = "Generators";
@@ -30,9 +30,9 @@ public sealed class Plugin : BasePlugin
 
         OptionalUiSize.Bind(Config);
 
-        var panelKey = Config.Bind("Controls", "PanelKey", KeyCode.F2,
-            "Key that opens and closes the Power Manager panel, F2 by default. None turns the key off; the lightning button in the bottom-left corner of the screen still opens the panel.\n" +
-            "打开和关闭 Power Manager 面板的按键，默认 F2。设为 None 则停用该按键，屏幕左下角的闪电按钮仍可打开面板。");
+        var panelKey = Config.Bind("Controls", "PanelKey", Enum.Parse<KeyCode>(Hotkey.DefaultKey),
+            "Key that opens and closes the Power Manager panel. Unbound by default: the lightning button in the bottom-left corner of the screen opens the panel. Set a key here to open it from the keyboard too.\n" +
+            "打开和关闭 Power Manager 面板的按键。默认不绑定：屏幕左下角的闪电按钮可以打开面板。在这里设置按键后，也可以用键盘打开。");
         var autoRefuel = Config.Bind(GeneratorsSection, "AutoRefuel", false,
             "Refuel generators by themselves from home storage when their fuel runs below AutoRefuelMinutes, using the fuel order. Off by default.\n" +
             "发电机燃料低于 AutoRefuelMinutes 时，自动按燃料顺序从家里的储物中添加燃料。默认关闭。");

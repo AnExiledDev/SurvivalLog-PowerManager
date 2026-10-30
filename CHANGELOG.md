@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.1
+
+- The panel key is now unbound by default; use the HUD button, or set a key in the settings.
+- The panel key no longer opens or closes the panel while you type in a text box.
+- Exiled's Toolkit 0.12.0 or newer is now required.
+- Made for Survival Log 1.1.20151.
+
 ## 0.2.0
 
 - The default fuel order no longer burns Scrap Paper, Newspaper, Entertaining Magazine, Wood Chips or Cardboard. It now burns Poor-Quality Alcohol, Common Alcohol and High-Proof Alcohol, weakest first, before Diesel. If you already play with Power Manager, your saved fuel order stays as it is.

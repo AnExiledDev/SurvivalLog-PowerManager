@@ -6,8 +6,8 @@ Running your home's power means walking to each generator to start it, stop it a
 
 ## Features
 
-- **Panel key**: press `F2` to open and close the panel in a loaded game, past the prologue. `Esc` or the close button also closes it.
-- **HUD button**: a lightning bolt at the top of the tool column in the bottom-left corner of the screen. It opens and closes the panel like `F2`. It only shows in a loaded game past the prologue.
+- **Panel key**: unbound by default. Set `PanelKey` in the config to open and close the panel from the keyboard in a loaded game, past the prologue. `Esc` or the close button closes it. The key does nothing while you type in a text box.
+- **HUD button**: a lightning bolt at the top of the tool column in the bottom-left corner of the screen. It opens and closes the panel. It only shows in a loaded game past the prologue.
 - **Battery and forecast**: the Power tab shows how much the battery holds, what your home makes and uses every 10 minutes, and how long until the battery is empty or full at that rate. While the city power is on it says the battery is not in use.
 - **Generators**: every fuel generator at home, whether it is running, how much fuel time it has left and how many fuel slots are filled. **Start**, **Stop** and **Refuel** for each one, and **Start all**, **Stop all** and **Refuel all** for every one.
 - **Auto-start**: turn on the game's own auto-start for a generator and pick the battery level it starts below, or set it for every generator at once. It is the same setting as the generator's own menu.
@@ -31,10 +31,9 @@ Power Manager writes nothing into your save file. Which devices are low priority
 
 | Key | What it does |
 | --- | --- |
-| `F2` | Opens and closes the panel (in a loaded game, past the prologue). |
 | `Esc` | Closes the panel. |
 
-`F2` can be changed or turned off in the config. The HUD button works either way.
+The panel key (`PanelKey`) is unbound by default: the HUD button opens the panel. Set a key in the config to open it from the keyboard too. It does nothing while you type in a text box.
 
 The mod's panel and messages follow the game's language: English or Simplified Chinese. Generator, device and item names come from the game.
 
@@ -52,7 +51,7 @@ The mod's panel and messages follow the game's language: English or Simplified C
 
 - Survival Log 1.1.20151. Built and tested on this version; a game update can break it until the mod is updated.
 - The [BepInEx Pack for Survival Log](https://www.nexusmods.com/survivallog/mods/12), the BepInEx 6 (IL2CPP) build for the game.
-- [Exiled's Toolkit](https://github.com/AnExiledDev/SurvivalLog-ExiledToolkit) 0.11.0 or newer. Power Manager does not load without it. It shows messages as pop-ups while the panel is closed, applies settings changed on the Mod Manager's Mods screen without a restart, and lays out the HUD's tool buttons.
+- [Exiled's Toolkit](https://github.com/AnExiledDev/SurvivalLog-ExiledToolkit) 0.12.0 or newer. Power Manager does not load without it. It keeps the panel key quiet while you type, shows messages as pop-ups while the panel is closed, applies settings changed on the Mod Manager's Mods screen without a restart, and lays out the HUD's tool buttons.
 
 ## Install
 
@@ -76,9 +75,9 @@ Settings live in `BepInEx\config\com.dev.survivallog.powermanager.cfg`, created 
 
 ## Troubleshooting
 
-Check `BepInEx\LogOutput.log` for `===== Power Manager 0.2.0 started, panel key F2, battery 1x the game's`. The same line, plus one for every press and what came of it, is in `BepInEx\power-manager.log`, which survives restarts.
+Check `BepInEx\LogOutput.log` for `===== Power Manager 0.2.1 started, panel key None, battery 1x the game's`. The same line, plus one for every press and what came of it, is in `BepInEx\power-manager.log`, which survives restarts.
 
-If `F2` does nothing, check that you are in a loaded game past the prologue and that no other mod uses the same key. You can pick another key in the config, or use the HUD button.
+If the panel key does nothing, check that you set one in the config (it is unbound by default), that you are in a loaded game past the prologue, that you are not typing in a text box, and that no other mod uses the same key. The HUD button works either way.
 
 If Refuel adds nothing, open the Fuel tab: only items on the list are used, and the count beside each shows how many are in home storage.
 

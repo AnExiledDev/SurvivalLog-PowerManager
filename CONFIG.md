@@ -8,9 +8,9 @@ The first time the game starts with Power Manager, the power settings you change
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| `PanelKey` | `F2` | Key that opens and closes the panel. `None` turns the key off; the lightning button in the bottom-left corner of the screen still opens the panel. |
+| `PanelKey` | `None` | Key that opens and closes the panel. Unbound by default: the lightning button in the bottom-left corner of the screen opens the panel. Set a key here to open it from the keyboard too. |
 
-The value is a Unity key name, for example `F2`, `F11`, `Insert` or `Keypad5`. `Esc` always closes the open panel and cannot be changed.
+The value is a Unity key name, for example `F2`, `F11`, `Insert` or `Keypad5`. `None`, the default, leaves it unbound. The key does nothing while you type in a text box. `Esc` always closes the open panel and cannot be changed.
 
 ## Generators
 

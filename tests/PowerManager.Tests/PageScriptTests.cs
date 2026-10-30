@@ -53,6 +53,33 @@ public class PageScriptTests
     }
 
     [Fact]
+    public void An_unbound_panel_key_is_left_out_of_the_bolt_buttons_tip()
+    {
+        var page = new PageScript();
+
+        page.Run(PageWords.Script(false));
+        page.Run("openHud()");
+        page.Live(true, "");
+        page.Poll();
+
+        Assert.True(page.Is("hudButton()"));
+        Assert.False(page.Is("hudButton().querySelector('.entry-tip-key')"));
+    }
+
+    [Fact]
+    public void A_bound_panel_key_shows_in_the_bolt_buttons_tip()
+    {
+        var page = new PageScript();
+
+        page.Run(PageWords.Script(false));
+        page.Run("openHud()");
+        page.Live(true, "F2");
+        page.Poll();
+
+        Assert.Equal("F2", page.Text("hudButton().querySelector('.entry-tip-key').textContent"));
+    }
+
+    [Fact]
     public void Out_of_a_game_the_bolt_button_is_taken_away()
     {
         var page = new PageScript();

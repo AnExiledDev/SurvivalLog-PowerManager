@@ -1,5 +1,5 @@
 Name: Power Manager
-Summary: Run your home's power from one panel on F2 or a HUD button: start and stop generators, set their auto-start, and refuel them from storage in your own fuel order, junk paper first. A battery forecast shows how long power lasts, low-priority devices switch off when the battery runs low in a power cut, and auto-refuel keeps generators fed.
+Summary: Run your home's power from one panel on a HUD button: start and stop generators, set their auto-start, and refuel them from storage in your own fuel order, junk paper first. A battery forecast shows how long power lasts, low-priority devices switch off when the battery runs low in a power cut, and auto-refuel keeps generators fed.
 
 Description (BBCode):
 [center][img]https://sldb.core-directive.com/media/save/1-save-safe.png[/img][/center]
@@ -24,10 +24,9 @@ Running your home's power means walking to each generator to start it, stop it a
 
 [size=5]Hotkeys[/size]
 [list]
-[*][b]F2[/b]: open or close the panel (in a loaded game, past the prologue).[/*]
 [*][b]Esc[/b]: close the panel.[/*]
 [/list]
-F2 can be changed or turned off in the config. The game's own hotkeys are off while the panel is open.
+The panel key is unbound by default: the HUD button opens the panel. Set PanelKey in the config to open it from the keyboard too; it does nothing while you type in a text box. The game's own hotkeys are off while the panel is open.
 
 Every action is the game's own: the same start, stop, auto-start, refuel and switch the game's menus use, and refuelling uses the items up. The mod writes nothing into your save file. You can remove it at any time; generators and devices stay as they are.
 
@@ -50,7 +49,7 @@ Works in English and Chinese.
 [list]
 [*]Survival Log 1.1.20151. A game update can break it until the mod is updated.[/*]
 [*][url=https://www.nexusmods.com/survivallog/mods/12]BepInEx for Survival Log[/url]. Install it first.[/*]
-[*][url=https://www.nexusmods.com/survivallog/mods/61]Exiled's Toolkit[/url] 0.11.0 or newer. Power Manager does not load without it. It shows messages as pop-ups while the panel is closed and applies settings changed on the Mod Manager's Mods screen without a restart.[/*]
+[*][url=https://www.nexusmods.com/survivallog/mods/61]Exiled's Toolkit[/url] 0.12.0 or newer. Power Manager does not load without it. It keeps the panel key quiet while you type, shows messages as pop-ups while the panel is closed and applies settings changed on the Mod Manager's Mods screen without a restart.[/*]
 [/list]
 
 [size=5]Installation[/size]
@@ -99,10 +98,9 @@ Open source under MIT: [url=https://github.com/AnExiledDev/SurvivalLog-PowerMana
 
 [size=5]快捷键[/size]
 [list]
-[*][b]F2[/b]：打开或关闭面板（已载入游戏且过了序章时）。[/*]
 [*][b]Esc[/b]：关闭面板。[/*]
 [/list]
-F2 可以在配置中修改或停用。面板打开时游戏自己的快捷键不起作用。
+面板按键默认不绑定，用 HUD 按钮打开面板。在配置中设置 PanelKey 后也可以用键盘打开；在输入框里打字时按键不起作用。面板打开时游戏自己的快捷键不起作用。
 
 所有操作都是游戏自己的：和游戏菜单里的启动、关闭、自动开启、加燃料和开关完全一样，加燃料也会真的消耗物品。模组不会往存档里写入任何数据。你可以随时移除它；发电机和设备保持原样。
 
@@ -124,7 +122,7 @@ F2 可以在配置中修改或停用。面板打开时游戏自己的快捷键�
 [list]
 [*]Survival Log 1.1.20151。游戏更新后模组可能暂时失效，直到模组更新为止。[/*]
 [*][url=https://www.nexusmods.com/survivallog/mods/12]BepInEx for Survival Log[/url]，请先安装。[/*]
-[*][url=https://www.nexusmods.com/survivallog/mods/61]Exiled's Toolkit[/url] 0.11.0 或更新版本。没有它本模组不会加载。面板关闭时，它把提示显示为弹出通知；它还让在 Mod Manager 的「模组」界面改动的设置无需重启即可生效。[/*]
+[*][url=https://www.nexusmods.com/survivallog/mods/61]Exiled's Toolkit[/url] 0.12.0 或更新版本。没有它本模组不会加载。打字时它让面板按键不起作用；面板关闭时，它把提示显示为弹出通知；它还让在 Mod Manager 的「模组」界面改动的设置无需重启即可生效。[/*]
 [/list]
 
 [size=5]安装[/size]
