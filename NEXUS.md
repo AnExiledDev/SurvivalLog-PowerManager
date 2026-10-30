@@ -60,7 +60,7 @@ Works in English and Chinese.
 [*]Extract it into the game folder (the folder with [font=Courier New]SurvivalLog.exe[/font]). The zip holds a BepInEx folder, so the DLL lands in the right place. When asked, merge the folders. The result should be:
 [code]C:\Program Files (x86)\Steam\steamapps\common\Survival Log\BepInEx\plugins\PowerManager.dll[/code][/*]
 [/list]
-If you use Game Rules or Machine Speed, update them too: their power settings have moved here.
+If you use Game Rules or Machine Speed, update them to 0.7.0 or newer too: their power settings have moved here. Until you do, Power Manager leaves those settings to the old version and a message asks you to update it.
 
 [size=5]Uninstall[/size]
 Delete [font=Courier New]PowerManager.dll[/font] from the [font=Courier New]BepInEx\plugins[/font] folder. Devices the mod switched off to save the battery stay off; switch them on from the game's own power panel.
@@ -133,7 +133,7 @@ Open source under MIT: [url=https://github.com/AnExiledDev/SurvivalLog-PowerMana
 [*]把压缩包解压到游戏目录（[font=Courier New]SurvivalLog.exe[/font] 所在的文件夹）。压缩包里带有 BepInEx 文件夹，DLL 会自动放到正确位置。如果提示合并文件夹，选择合并。解压后应为：
 [code]C:\Program Files (x86)\Steam\steamapps\common\Survival Log\BepInEx\plugins\PowerManager.dll[/code][/*]
 [/list]
-如果你在用 Game Rules 或 Machine Speed，请一并更新：它们的电力设置已经移到这里。
+如果你在用 Game Rules 或 Machine Speed，请一并更新到 0.7.0 或更新版本：它们的电力设置已经移到这里。更新之前，Power Manager 会把这些设置留给旧版本处理，并提示你更新。
 
 [size=5]卸载[/size]
 从 [font=Courier New]BepInEx\plugins[/font] 文件夹中删除 [font=Courier New]PowerManager.dll[/font]。模组为节省电量而关闭的设备会保持关闭；可以在游戏自己的电力面板中重新打开。

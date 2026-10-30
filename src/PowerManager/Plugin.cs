@@ -6,16 +6,20 @@ using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using PowerManagerMod.Adapters;
 using PowerManagerMod.Core;
+using ExiledToolkit;
 using UnityEngine;
 
 namespace PowerManagerMod;
 
 [BepInPlugin(Guid, "Power Manager", Version)]
 [BepInDependency(OptionalLive.ToolkitGuid, OptionalLive.ToolkitVersion)]
+// Loaded after these when they are installed, so their versions can be read (see OldMods).
+[BepInDependency(OldMods.GameRulesGuid, BepInDependency.DependencyFlags.SoftDependency)]
+[BepInDependency(OldMods.MachineSpeedGuid, BepInDependency.DependencyFlags.SoftDependency)]
 public sealed class Plugin : BasePlugin
 {
     private const string Guid = "com.dev.survivallog.powermanager";
-    private const string Version = "0.2.1";
+    private const string Version = "0.2.2";
     private const string DefenseManagerGuid = "com.dev.survivallog.defensemanager";
     private const string DevicesFileName = Guid + ".devices.txt";
     private const string GeneratorsSection = "Generators";
@@ -59,29 +63,56 @@ public sealed class Plugin : BasePlugin
 
         var harmony = new Harmony(Guid);
         var isDefenseManagerLoaded = IL2CPPChainloader.Instance.Plugins.ContainsKey(DefenseManagerGuid);
-        var tables = new RuleTables(rules.BatteryMultiplier.Value, log.Write);
+        var isGameRulesOld = OldMods.IsOld(InstalledVersion(OldMods.GameRulesGuid));
+        var isMachineSpeedOld = OldMods.IsOld(InstalledVersion(OldMods.MachineSpeedGuid));
+        var tables = new RuleTables(isGameRulesOld ? 1f : rules.BatteryMultiplier.Value, log.Write);
         var config = new PanelConfig(panelKey, autoRefuel, autoRefuelMinutes, shedBelow, fuelOrder);
         var store = new DeviceStore(Path.Combine(Paths.ConfigPath, DevicesFileName), log.Write);
         var session = new PanelSession(new GamePower(log.Write, isDefenseManagerLoaded), new WebPage(log.Write), config, store, log.Write);
 
         log.Write($"===== Power Manager {Version} started, panel key {panelKey.Value}, battery {rules.BatteryMultiplier.Value:0.##}x the game's");
+        WarnOldMods(isGameRulesOld, isMachineSpeedOld, log.Write);
         InputGate.Apply(harmony, log.Write);
         PageMessages.Apply(harmony, log.Write);
 
-        OptionalLive.Watch(() =>
+        if (!isGameRulesOld)
         {
-            var read = rules.Read();
+            OptionalLive.Watch(() =>
+            {
+                var read = rules.Read();
 
-            RulePatches.Use(harmony, read, log.Write);
-            SolarDetour.Use(read, log.Write);
-        }, rules.SolarMultiplier, rules.BadWeatherOutput, rules.DevicePowerUse, rules.PowerCutDelay, rules.NoPowerCut, rules.NoBlackoutPanic);
-        OptionalLive.Watch(fuelBurn, value => RulePatches.UseBurn(harmony, Speed.From(value), log.Write));
-        OptionalLive.Watch(efficiency, value => tables.UseEfficiency(Multiplier.From(value, 0.1f, 100f)));
+                RulePatches.Use(harmony, read, log.Write);
+                SolarDetour.Use(read, log.Write);
+            }, rules.SolarMultiplier, rules.BadWeatherOutput, rules.DevicePowerUse, rules.PowerCutDelay, rules.NoPowerCut, rules.NoBlackoutPanic);
+        }
+
+        if (!isMachineSpeedOld)
+        {
+            OptionalLive.Watch(fuelBurn, value => RulePatches.UseBurn(harmony, Speed.From(value), log.Write));
+            OptionalLive.Watch(efficiency, value => tables.UseEfficiency(Multiplier.From(value, 0.1f, 100f)));
+        }
 
         PowerTicker.Tables = tables;
         PowerTicker.Session = session;
         PowerTicker.Log = log.Write;
         AddComponent<PowerTicker>();
+    }
+
+    private static string? InstalledVersion(string guid) =>
+        IL2CPPChainloader.Instance.Plugins.TryGetValue(guid, out var info) ? info.Metadata.Version.ToString() : null;
+
+    /// <summary>
+    /// An old Game Rules or Machine Speed still applies the power settings this mod took over, so this mod leaves them to
+    /// it (they would apply twice otherwise) and asks the player to update it.
+    /// </summary>
+    private static void WarnOldMods(bool isGameRulesOld, bool isMachineSpeedOld, Action<string> log)
+    {
+        var names = OldMods.Names(isGameRulesOld, isMachineSpeedOld);
+
+        if (names.Length == 0) return;
+
+        log($"{names} is older than 0.7.0 and still has the power settings, so they are left to it until it is updated; this mod's own values for them are not used");
+        PowerTicker.Notice = () => Toasts.Show(new ToastRequest(Texts.Source.Pick(GameLanguage.IsChinese()), Texts.UpdateOldMods.Say(GameLanguage.IsChinese(), names)) { Kind = ToastKind.Warning });
     }
 
     /// <summary>A config file with no Generators section was never written by this mod, so its settings come from the old mods.</summary>
@@ -118,8 +149,17 @@ public sealed class Plugin : BasePlugin
                     continue;
                 }
 
-                Config[new ConfigDefinition(setting.Section, setting.Key)].SetSerializedValue(setting.Value);
-                log($"carried over {setting.Section}/{setting.Key} = {setting.Value}");
+                var entry = Config[new ConfigDefinition(setting.Section, setting.Key)];
+                var before = entry.GetSerializedValue();
+
+                // BepInEx logs a value it cannot read and keeps the old one, without throwing.
+                entry.SetSerializedValue(setting.Value);
+
+                var after = entry.GetSerializedValue();
+
+                log(after != before || after == setting.Value
+                    ? $"carried over {setting.Section}/{setting.Key} = {setting.Value}"
+                    : $"could not read {setting.Section}/{setting.Key} = {setting.Value} (or it already was that), it is {after}");
             }
             catch (Exception ex)
             {

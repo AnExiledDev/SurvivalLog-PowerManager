@@ -1,8 +1,14 @@
 # Changelog
 
-## 0.2.1
+## 0.2.2
 
 - **Warning:** needs Exiled's Toolkit 0.12.0 or newer. Update the Toolkit first.
+- With Game Rules or Machine Speed older than 0.7.0 installed, Power Manager now leaves their power settings to them and a message asks you to update them. Before, both mods applied the same settings, so device power, battery size and generator settings counted twice.
+- A carried-over setting the mod could not read is now logged as not carried.
+- Made for Survival Log 1.1.20151.
+
+## 0.2.1
+
 - The panel key is now unbound by default; use the HUD button, or set a key in the settings.
 - The panel key no longer opens or closes the panel while you type in a text box.
 - Exiled's Toolkit 0.12.0 or newer is now required.

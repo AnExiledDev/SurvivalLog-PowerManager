@@ -61,7 +61,7 @@ The mod's panel and messages follow the game's language: English or Simplified C
 4. Extract the zip into the game folder (the folder with `SurvivalLog.exe`). It holds a `BepInEx` folder, so the DLL lands in the right place. When asked, merge the folders. The result should be:
    `C:\Program Files (x86)\Steam\steamapps\common\Survival Log\BepInEx\plugins\PowerManager.dll`
 
-If you use Game Rules or Machine Speed, update them too: their power settings have moved here.
+If you use Game Rules or Machine Speed, update them to 0.7.0 or newer too: their power settings have moved here. Until you do, Power Manager leaves those settings to the old version and a message asks you to update it.
 
 ## Uninstall
 
@@ -75,7 +75,7 @@ Settings live in `BepInEx\config\com.dev.survivallog.powermanager.cfg`, created 
 
 ## Troubleshooting
 
-Check `BepInEx\LogOutput.log` for `===== Power Manager 0.2.1 started, panel key None, battery 1x the game's`. The same line, plus one for every press and what came of it, is in `BepInEx\power-manager.log`, which survives restarts.
+Check `BepInEx\LogOutput.log` for `===== Power Manager 0.2.2 started, panel key None, battery 1x the game's`. The same line, plus one for every press and what came of it, is in `BepInEx\power-manager.log`, which survives restarts.
 
 If the panel key does nothing, check that you set one in the config (it is unbound by default), that you are in a loaded game past the prologue, that you are not typing in a text box, and that no other mod uses the same key. The HUD button works either way.
 

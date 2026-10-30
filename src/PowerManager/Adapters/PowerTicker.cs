@@ -15,6 +15,10 @@ public sealed class PowerTicker : MonoBehaviour
     internal static PanelSession? Session;
     internal static RuleTables? Tables;
     internal static Action<string> Log = _ => { };
+
+    /// <summary>A toast held back until the game has had time to draw its menu, so it is not lost behind the loading screen.</summary>
+    internal static Action? Notice;
+    private const float NoticeAfterSeconds = 15f;
     private static readonly HashSet<string> ReportedFailures = new();
 
     public PowerTicker(IntPtr pointer) : base(pointer)
@@ -23,6 +27,21 @@ public sealed class PowerTicker : MonoBehaviour
 
     private void Update()
     {
+        try
+        {
+            if (Notice != null && Clock.Now() >= NoticeAfterSeconds)
+            {
+                var notice = Notice;
+
+                Notice = null;
+                notice();
+            }
+        }
+        catch (Exception ex)
+        {
+            ReportFailure(ex);
+        }
+
         try
         {
             Tables?.Tick(Clock.Now());

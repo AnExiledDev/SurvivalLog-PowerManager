@@ -18,6 +18,7 @@
   <ItemGroup>
     <Reference Include="$(BepInExCore)\BepInEx.Core.dll" Private="false" />
     <Reference Include="$(BepInExCore)\BepInEx.Unity.IL2CPP.dll" Private="false" />
+    <Reference Include="$(BepInExCore)\SemanticVersioning.dll" Private="false" />
     <Reference Include="$(BepInExCore)\0Harmony.dll" Private="false" />
     <Reference Include="$(BepInExCore)\Il2CppInterop.Runtime.dll" Private="false" />
     <Reference Include="$(BepInExCore)\Il2CppInterop.Common.dll" Private="false" />
