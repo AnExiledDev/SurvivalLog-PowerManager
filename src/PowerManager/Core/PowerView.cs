@@ -6,8 +6,11 @@ using System.Text;
 
 namespace PowerManagerMod.Core;
 
-/// <summary>One line of the fuel tab: an item, its name and how many are in home storage.</summary>
-public readonly record struct FuelLine(int ConfigId, string Name, int Count);
+/// <summary>
+/// One line of the fuel tab: an item, its name, how many are in home storage and the burn value one of it gives (0 for
+/// an item the game does not burn).
+/// </summary>
+public readonly record struct FuelLine(int ConfigId, string Name, int Count, int Burn);
 
 /// <summary>
 /// The JSON the panel draws from. Times are whole game minutes and power is the game's units, rounded; the page words
@@ -20,8 +23,7 @@ public static class PowerView
         IReadOnlyCollection<DeviceKey> low,
         IReadOnlyCollection<DeviceKey> shed,
         Func<long, bool> isRefuelling,
-        IReadOnlyList<FuelLine> order,
-        IReadOnlyList<FuelLine> spare,
+        string fuelJson,
         PanelSettings settings)
     {
         var json = new StringBuilder(2048).Append('{');
@@ -86,10 +88,7 @@ public static class PowerView
             json.Append(']');
         }
 
-        json.Append(",\"order\":");
-        Lines(json, order);
-        json.Append(",\"spare\":");
-        Lines(json, spare);
+        json.Append(',').Append(fuelJson);
 
         json.Append(",\"set\":{")
             .Append("\"key\":").Append(JsText.Literal(settings.Key))
@@ -103,29 +102,52 @@ public static class PowerView
     }
 
     /// <summary>
-    /// The fuel tab's two lists: the fuel order with what storage holds of each, and every other burnable item in storage.
+    /// The fuel tab's two lists: the fuel order with what storage holds of each, and the add list, which is every item the
+    /// game burns that is not on the order, held or not, weakest first. An item taken off the order is back in the add
+    /// list in the same read.
     /// </summary>
-    public static (List<FuelLine> Order, List<FuelLine> Spare) FuelLines(FuelOrder order, IReadOnlyList<FuelStack> stock, Func<int, string> name)
+    public static (List<FuelLine> Order, List<FuelLine> Spare) FuelLines(FuelOrder order, IReadOnlyList<FuelStack> stock, IReadOnlyList<FuelItem> items, Func<int, string> name)
     {
         var counts = new Dictionary<int, int>();
 
         foreach (var stack in stock) counts[stack.ConfigId] = (counts.TryGetValue(stack.ConfigId, out var held) ? held : 0) + Math.Max(0, stack.Count);
 
+        var burns = new Dictionary<int, int>(items.Count);
+
+        foreach (var item in items)
+        {
+            if (item.BurnValue > 0) burns[item.ConfigId] = item.BurnValue;
+        }
+
         var listed = new List<FuelLine>(order.Ids.Count);
 
-        foreach (var id in order.Ids) listed.Add(new FuelLine(id, name(id), counts.TryGetValue(id, out var held) ? held : 0));
+        foreach (var id in order.Ids) listed.Add(new FuelLine(id, name(id), Held(counts, id), burns.TryGetValue(id, out var burn) ? burn : 0));
 
         var spare = new List<FuelLine>();
 
-        foreach (var (id, count) in counts)
+        foreach (var (id, burn) in burns)
         {
-            if (count > 0 && !order.Contains(id)) spare.Add(new FuelLine(id, name(id), count));
+            if (!order.Contains(id)) spare.Add(new FuelLine(id, name(id), Held(counts, id), burn));
         }
 
-        spare.Sort((a, b) => a.ConfigId.CompareTo(b.ConfigId));
+        spare.Sort((a, b) => a.Burn != b.Burn ? a.Burn.CompareTo(b.Burn) : a.ConfigId.CompareTo(b.ConfigId));
 
         return (listed, spare);
     }
+
+    /// <summary>The fuel tab's part of the view, <c>"order":[...],"spare":[...]</c>, built apart so it is rebuilt only when the lists change.</summary>
+    public static string FuelJson(IReadOnlyList<FuelLine> order, IReadOnlyList<FuelLine> spare)
+    {
+        var json = new StringBuilder(64 + (order.Count + spare.Count) * 64).Append("\"order\":");
+
+        Lines(json, order);
+        json.Append(",\"spare\":");
+        Lines(json, spare);
+
+        return json.ToString();
+    }
+
+    private static int Held(Dictionary<int, int> counts, int id) => counts.TryGetValue(id, out var held) ? held : 0;
 
     private static void Lines(StringBuilder json, IReadOnlyList<FuelLine> lines)
     {
@@ -138,6 +160,7 @@ public static class PowerView
             json.Append("{\"cfg\":").Append(lines[i].ConfigId.ToString(CultureInfo.InvariantCulture))
                 .Append(",\"name\":").Append(JsText.Literal(lines[i].Name))
                 .Append(",\"n\":").Append(lines[i].Count.ToString(CultureInfo.InvariantCulture))
+                .Append(",\"burn\":").Append(lines[i].Burn.ToString(CultureInfo.InvariantCulture))
                 .Append('}');
         }
 

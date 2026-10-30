@@ -8,14 +8,31 @@ public class FuelOrderTests
 {
     private static readonly long[] NoneRefused = Array.Empty<long>();
 
+    private const int ScrapPaper = 20001;
+    private const int Newspaper = 2506;
+    private const int EntertainingMagazine = 2505;
+    private const int WoodChips = 20005;
+    private const int Cardboard = 20101;
+    private const int PoorAlcohol = 15505;
+    private const int CommonAlcohol = 15504;
+    private const int HighProofAlcohol = 15506;
+    private const int Diesel = 40000;
+
     [Fact]
-    public void The_default_burns_junk_paper_before_cardboard_and_keeps_diesel_for_last()
+    public void The_default_burns_junk_paper_first_then_the_alcohols_weakest_first_and_keeps_diesel_for_last()
     {
-        var ids = FuelOrder.Parse(FuelOrder.Default).Ids;
+        var ids = FuelOrder.Parse(FuelOrder.Default).Ids.ToList();
 
         Assert.Equal(42001, ids[0]);
-        Assert.True(ids.ToList().IndexOf(20005) < ids.ToList().IndexOf(20101), "wood chips (1500) burn before cardboard (3000)");
-        Assert.Equal(40000, ids[^1]);
+        Assert.Equal(new[] { PoorAlcohol, CommonAlcohol, HighProofAlcohol, Diesel }, ids.Skip(ids.Count - 4));
+    }
+
+    [Fact]
+    public void The_default_leaves_scrap_paper_newspaper_magazines_wood_chips_and_cardboard_off()
+    {
+        var order = FuelOrder.Parse(FuelOrder.Default);
+
+        foreach (var id in new[] { ScrapPaper, Newspaper, EntertainingMagazine, WoodChips, Cardboard }) Assert.False(order.Contains(id), $"{id} is on the default list");
     }
 
     [Fact]

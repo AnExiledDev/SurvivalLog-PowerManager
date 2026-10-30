@@ -41,7 +41,7 @@
     <AssemblyMetadata Include="ModManager.Description" Value="One panel for your home power, opened with F2 or a HUD button. Start and stop every generator, set auto-start, and refuel them from home storage in your own fuel order, junk paper first. Shows battery charge with the time until it runs empty or full, switches devices on and off, and turns low-priority devices off when the battery runs low. Also holds the battery, device power, power cut and solar settings.&#10;一个面板管理家里的电力，用 F2 或 HUD 按钮打开。启动和关闭所有发电机，设置自动启动，并按你定的燃料顺序从家里的储物中添加燃料，先烧没用的纸张。显示蓄电池电量以及耗尽或充满还要多久，可开关各个电器，电量低时自动关闭低优先级电器。蓄电池、电器耗电、停电和太阳能的设置也在这里。" />
     <AssemblyMetadata Include="ModManager.Author" Value="AnExiledDev" />
     <AssemblyMetadata Include="ModManager.Category" Value="QualityOfLife" />
-    <AssemblyMetadata Include="ModManager.GameVersion" Value="1.1.19611" />
+    <AssemblyMetadata Include="ModManager.GameVersion" Value="1.1.20151" />
     <AssemblyMetadata Include="ModManager.Settings" Value="Restart" />
     <AssemblyMetadata Include="ModManager.GitHub" Value="AnExiledDev/SurvivalLog-PowerManager" />
     <AssemblyMetadata Include="ModManager.Changelog" Value="https://github.com/AnExiledDev/SurvivalLog-PowerManager/blob/main/CHANGELOG.md" />

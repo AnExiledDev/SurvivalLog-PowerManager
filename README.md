@@ -12,7 +12,7 @@ Running your home's power means walking to each generator to start it, stop it a
 - **Generators**: every fuel generator at home, whether it is running, how much fuel time it has left and how many fuel slots are filled. **Start**, **Stop** and **Refuel** for each one, and **Start all**, **Stop all** and **Refuel all** for every one.
 - **Auto-start**: turn on the game's own auto-start for a generator and pick the battery level it starts below, or set it for every generator at once. It is the same setting as the generator's own menu.
 - **Refuel from home storage**: Refuel takes fuel from your home's storage and fills the generator, in your fuel order. The neighbor's basket and stoves are left alone.
-- **Fuel order**: the Fuel tab lists the items used as fuel, top first, with how many of each are in storage. Move them up and down, remove them, or add any other burnable item you have in storage. Items left off the list are never burned, so food and tools stay where they are. The default list burns notes, letters, flyers and other junk paper first, then common fuels from the weakest to the strongest.
+- **Fuel order**: the Fuel tab lists the items used as fuel, top first, with how many of each are in storage. Each item shows its burn value. Move them up and down, remove them, or add any other item that burns, whether you have it or not. The add list leaves out what is already on the fuel list, and an item you remove shows up there right away. Items left off the list are never burned, so food and tools stay where they are. The default list burns notes, letters, flyers and other junk paper first, then Poor-Quality, Common and High-Proof Alcohol, then Diesel last.
 - **Auto-refuel**: turn it on in the Settings tab and a running generator, or one set to auto-start, is topped up from storage when it has less than 60 in-game minutes of fuel left (you can change the minutes). When your storage has nothing from the fuel list, a message says so once.
 - **Devices**: every powered device at home, with how much power it uses and an **On**/**Off** switch.
 - **Load shedding**: mark devices as **Low priority**. During a power cut, when the battery falls below 20% (you can change it), those devices switch off, and they switch back on once the battery is 10 points above that. Only devices the mod switched off are switched back on.
@@ -50,7 +50,7 @@ The mod's panel and messages follow the game's language: English or Simplified C
 
 ## Requirements
 
-- Survival Log 1.1.19611. Built and tested on this version; a game update can break it until the mod is updated.
+- Survival Log 1.1.20151. Built and tested on this version; a game update can break it until the mod is updated.
 - The [BepInEx Pack for Survival Log](https://www.nexusmods.com/survivallog/mods/12), the BepInEx 6 (IL2CPP) build for the game.
 - [Exiled's Toolkit](https://github.com/AnExiledDev/SurvivalLog-ExiledToolkit) 0.11.0 or newer. Power Manager does not load without it. It shows messages as pop-ups while the panel is closed, applies settings changed on the Mod Manager's Mods screen without a restart, and lays out the HUD's tool buttons.
 
@@ -76,7 +76,7 @@ Settings live in `BepInEx\config\com.dev.survivallog.powermanager.cfg`, created 
 
 ## Troubleshooting
 
-Check `BepInEx\LogOutput.log` for `===== Power Manager 0.1.0 started, panel key F2, battery 1x the game's`. The same line, plus one for every press and what came of it, is in `BepInEx\power-manager.log`, which survives restarts.
+Check `BepInEx\LogOutput.log` for `===== Power Manager 0.2.0 started, panel key F2, battery 1x the game's`. The same line, plus one for every press and what came of it, is in `BepInEx\power-manager.log`, which survives restarts.
 
 If `F2` does nothing, check that you are in a loaded game past the prologue and that no other mod uses the same key. You can pick another key in the config, or use the HUD button.
 

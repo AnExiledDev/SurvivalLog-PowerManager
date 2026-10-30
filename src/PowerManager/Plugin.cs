@@ -15,7 +15,7 @@ namespace PowerManagerMod;
 public sealed class Plugin : BasePlugin
 {
     private const string Guid = "com.dev.survivallog.powermanager";
-    private const string Version = "0.1.0";
+    private const string Version = "0.2.0";
     private const string DefenseManagerGuid = "com.dev.survivallog.defensemanager";
     private const string DevicesFileName = Guid + ".devices.txt";
     private const string GeneratorsSection = "Generators";

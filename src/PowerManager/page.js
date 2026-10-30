@@ -320,7 +320,7 @@
 
     if (state.tab === 'settings') ui.body.appendChild(settingsTab());
     else if (!state.data.game) ui.body.appendChild(add(el('div', 'pm-well'), el('div', 'pm-note', say('noGame'))));
-    else if (state.tab === 'fuel') add(ui.body, orderWell(), spareWell());
+    else if (state.tab === 'fuel') fuelTab().forEach(function (node) { ui.body.appendChild(node); });
     else add(ui.body, generatorWell(), deviceWell());
 
     SCROLLERS.forEach(function (name) {
@@ -454,6 +454,24 @@
 
   // ===== The fuel tab =====
 
+  // The two lists are rebuilt only when they or the words changed: the add list holds every burnable item in the game,
+  // and the rest of the view changes every second while a generator runs.
+  var fuelDrawn = null;
+
+  function fuelTab() {
+    var key = JSON.stringify([state.data.order || [], state.data.spare || []]);
+    var words = window.__slpowerWords;
+
+    if (!fuelDrawn || fuelDrawn.key !== key || fuelDrawn.words !== words) fuelDrawn = { key: key, words: words, nodes: [orderWell(), spareWell()] };
+
+    return fuelDrawn.nodes;
+  }
+
+  // How many of it storage holds and its burn value; an item the game does not burn shows only the count.
+  function fuelInfo(line) {
+    return line.burn > 0 ? say('fuelInfo', line.n, line.burn) : say('inStorage', line.n);
+  }
+
   function orderWell() {
     var order = state.data.order || [];
     var well = el('div', 'pm-well');
@@ -464,7 +482,7 @@
     if (order.length === 0) list.appendChild(el('div', 'pm-note', say('emptyOrder')));
 
     order.forEach(function (line, i) {
-      var name = add(el('div', 'pm-nm'), el('b', '', (i + 1) + '. ' + line.name), el('small', '', say('inStorage', line.n)));
+      var name = add(el('div', 'pm-nm'), el('b', '', (i + 1) + '. ' + line.name), el('small', '', fuelInfo(line)));
 
       list.appendChild(add(el('div', 'pm-row'), name,
         button(say('up'), 'fuelup', line.cfg, i > 0, 'pm-sm'),
@@ -485,7 +503,7 @@
     if (spare.length === 0) list.appendChild(el('div', 'pm-note', say('noOtherFuel')));
 
     spare.forEach(function (line) {
-      var name = add(el('div', 'pm-nm'), el('b', '', line.name), el('small', '', say('inStorage', line.n)));
+      var name = add(el('div', 'pm-nm'), el('b', '', line.name), el('small', '', fuelInfo(line)));
 
       list.appendChild(add(el('div', 'pm-row'), name, button(say('addFuel'), 'fueladd', line.cfg, true, 'pm-sm')));
     });

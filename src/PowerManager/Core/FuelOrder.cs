@@ -12,12 +12,13 @@ namespace PowerManagerMod.Core;
 public sealed class FuelOrder
 {
     /// <summary>
-    /// Junk paper first (notes, letters, flyers and the like, which have no other use), then the common fuels from the
-    /// weakest to the strongest, so the best fuel is kept for last.
+    /// Junk paper first (notes, letters, flyers and the like, which have no other use), then the three alcohols from the
+    /// weakest to the strongest (poor-quality 4000, common 6000, high-proof 9000), then diesel, so the best fuel is kept
+    /// for last. Scrap paper, newspaper, magazines, wood chips and cardboard are not on it; a player can add them.
     /// </summary>
     public const string Default =
         "42001,42002,42003,42006,42007,42008,42011,42012,42013,42014,42015,42016,42017,42018,42019,42020,42021,42026,42028," +
-        "42032,42033,42034,42035,42036,42039,42040,42042,42044,42045,42046,11045,20001,2506,2505,20005,20101,40000";
+        "42032,42033,42034,42035,42036,42039,42040,42042,42044,42045,42046,11045,15505,15504,15506,40000";
 
     private readonly int[] _ids;
 

@@ -21,9 +21,16 @@ internal sealed class GamePower : IPowerGame
     private const int ConsumerType = 1;
     private const int GeneratorType = 3;
 
+    /// <summary>The item category the game's task-item test looks at; an item of any other category is never a task item.</summary>
+    private const int TaskCategory = 22;
+
     private readonly Action<string> _log;
     private readonly bool _isDefenseManagerLoaded;
     private readonly HashSet<string> _reportedFailures = new();
+    private readonly List<FuelRow> _fuelRows = new();
+
+    /// <summary>The table <see cref="_fuelRows"/> was read from, held so its address is not reused by another.</summary>
+    private Il2CppSystem.Collections.Generic.Dictionary<int, Config_Item>? _fuelTable;
 
     public GamePower(Action<string> log, bool isDefenseManagerLoaded)
     {
@@ -102,6 +109,40 @@ internal sealed class GamePower : IPowerGame
         }
 
         return stock;
+    }
+
+    /// <summary>
+    /// Every item a generator takes as fuel: burnable, with a burn value above 0, and not a task item. Read from the item
+    /// table once per table (a config reload swaps the dictionary), then checked each call only for
+    /// task items, whose state changes with the game: the same test the generator's fuel handler makes.
+    /// </summary>
+    public IReadOnlyList<FuelItem> FuelItems()
+    {
+        try
+        {
+            var rows = GameSingleton.Existing<ConfigManager>()?._Config_Item_Dict;
+
+            if (rows == null) return Array.Empty<FuelItem>();
+
+            if (_fuelTable == null || _fuelTable.Pointer != rows.Pointer) ReadFuelRows(rows);
+
+            var items = new List<FuelItem>(_fuelRows.Count);
+
+            foreach (var row in _fuelRows)
+            {
+                if (row.IsTaskCategory && GiveAwayRules.IsTaskItem(row.ConfigId)) continue;
+
+                items.Add(new FuelItem(row.ConfigId, row.BurnValue));
+            }
+
+            return items;
+        }
+        catch (Exception ex)
+        {
+            ReportOnce("fuel item read", ex);
+
+            return Array.Empty<FuelItem>();
+        }
     }
 
     public string ItemName(int configId)
@@ -302,6 +343,21 @@ internal sealed class GamePower : IPowerGame
         return rows != null && rows.TryGetValue(row._ElectricalFurnitureID_k__BackingField, out var electrical) ? electrical : null;
     }
 
+    private void ReadFuelRows(Il2CppSystem.Collections.Generic.Dictionary<int, Config_Item> rows)
+    {
+        _fuelRows.Clear();
+        _fuelTable = null;
+
+        foreach (var row in rows.Values)
+        {
+            if (row == null || !row._Burnable_k__BackingField || row._BurnValue_k__BackingField <= 0) continue;
+
+            _fuelRows.Add(new FuelRow(row._ID_k__BackingField, row._BurnValue_k__BackingField, row._Category_k__BackingField == TaskCategory));
+        }
+
+        _fuelTable = rows;
+    }
+
     /// <summary>
     /// Burnable and not a task item: the game's own test in the generator's fuel handler, so nothing offered here is
     /// refused there.
@@ -365,4 +421,6 @@ internal sealed class GamePower : IPowerGame
     {
         if (_reportedFailures.Add(operation)) _log($"{operation} failed (each kind reported once): {ex}");
     }
+
+    private readonly record struct FuelRow(int ConfigId, int BurnValue, bool IsTaskCategory);
 }

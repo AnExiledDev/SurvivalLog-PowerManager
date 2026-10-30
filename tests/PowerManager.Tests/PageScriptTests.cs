@@ -10,17 +10,17 @@ public class PageScriptTests
 
     private static readonly PanelSettings Settings = new("F2", AutoRefuel: false, AutoRefuelMinutes: 60, ShedBelow: 20);
 
-    private static string View(Battery? battery = null, Device? device = null, Generator? generator = null, IReadOnlyCollection<DeviceKey>? low = null)
+    private static string View(Battery? battery = null, Device? device = null, Generator? generator = null, IReadOnlyCollection<DeviceKey>? low = null, string? fuelJson = null)
     {
         var scene = new PowerScene(
             battery ?? new Battery(400f, 1000f, 10f, 30f, IsOutage: true, IsLocked: false),
             new[] { generator ?? new Generator(9007199254740993, "Diesel Generator", false, 1, 4, 3600f, false, 0.3f) },
             new[] { device ?? new Device(77, LampKey, "Lamp", true, 2.5f) },
             new GameLoad(1, 1));
-        var order = new[] { new FuelLine(42001, "Shopping Receipt", 3), new FuelLine(20101, "Cardboard", 0) };
-        var spare = new[] { new FuelLine(11111, "Old Chair", 2) };
+        var order = new[] { new FuelLine(42001, "Shopping Receipt", 3, 300), new FuelLine(20101, "Cardboard", 0, 3000) };
+        var spare = new[] { new FuelLine(11111, "Old Chair", 2, 1200), new FuelLine(15506, "High-Proof Alcohol", 0, 9000) };
 
-        return PowerView.Json(scene, low ?? Array.Empty<DeviceKey>(), Array.Empty<DeviceKey>(), _ => false, order, spare, Settings);
+        return PowerView.Json(scene, low ?? Array.Empty<DeviceKey>(), Array.Empty<DeviceKey>(), _ => false, fuelJson ?? PowerView.FuelJson(order, spare), Settings);
     }
 
     private static PageScript OpenPanel(string view, bool isChinese = false)
@@ -127,6 +127,46 @@ public class PageScriptTests
     }
 
     [Fact]
+    public void Every_fuel_line_in_both_lists_shows_its_burn_value()
+    {
+        var page = OpenPanel(View());
+
+        page.Click("panelButtonWith('tab', 'fuel')");
+
+        var order = page.Text("document.querySelector('.pm-order').textContent");
+        var spare = page.Text("document.querySelector('.pm-spare').textContent");
+
+        Assert.Contains("3 in storage, burn value 300", order);
+        Assert.Contains("0 in storage, burn value 3000", order);
+        Assert.Contains("2 in storage, burn value 1200", spare);
+        Assert.Contains("0 in storage, burn value 9000", spare);
+    }
+
+    [Fact]
+    public void An_item_removed_from_the_order_shows_in_the_add_list_when_the_next_view_arrives()
+    {
+        var items = new[] { new FuelItem(42001, 300), new FuelItem(20101, 3000) };
+        var order = FuelOrder.Parse("42001,20101");
+        var page = OpenPanel(View(fuelJson: FuelJson(order, items)));
+
+        page.Click("panelButtonWith('tab', 'fuel')");
+        Assert.True(page.Is("panelButtonWith('fueloff', '20101')"));
+        Assert.False(page.Is("panelButtonWith('fueladd', '20101')"));
+
+        page.Show(View(fuelJson: FuelJson(order.Remove(20101), items)));
+
+        Assert.False(page.Is("panelButtonWith('fueloff', '20101')"));
+        Assert.True(page.Is("panelButtonWith('fueladd', '20101')"));
+    }
+
+    private static string FuelJson(FuelOrder order, IReadOnlyList<FuelItem> items)
+    {
+        var (listed, spare) = PowerView.FuelLines(order, Array.Empty<FuelStack>(), items, id => "item " + id);
+
+        return PowerView.FuelJson(listed, spare);
+    }
+
+    [Fact]
     public void The_settings_tab_steps_shedding_by_five()
     {
         var page = OpenPanel(View());
@@ -169,7 +209,7 @@ public class PageScriptTests
     [Fact]
     public void With_no_game_loaded_the_panel_says_to_load_one()
     {
-        var page = OpenPanel(PowerView.Json(null, Array.Empty<DeviceKey>(), Array.Empty<DeviceKey>(), _ => false, Array.Empty<FuelLine>(), Array.Empty<FuelLine>(), Settings));
+        var page = OpenPanel(PowerView.Json(null, Array.Empty<DeviceKey>(), Array.Empty<DeviceKey>(), _ => false, PowerView.FuelJson(Array.Empty<FuelLine>(), Array.Empty<FuelLine>()), Settings));
 
         Assert.Contains("Load a game first.", page.Text("drawingOf(document.body)"));
     }

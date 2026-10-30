@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0
+
+- The default fuel order no longer burns Scrap Paper, Newspaper, Entertaining Magazine, Wood Chips or Cardboard. It now burns Poor-Quality Alcohol, Common Alcohol and High-Proof Alcohol, weakest first, before Diesel. If you already play with Power Manager, your saved fuel order stays as it is.
+- You can now add any item that burns to the fuel order, not only items in your storage. Items already on the fuel order are not offered again.
+- An item you remove from the fuel order shows up in the add list right away, so you can add it back without closing the panel.
+- Every item on the Fuel tab shows its burn value, so you can see which fuel lasts longest.
+- Made for Survival Log 1.1.20151.
+
 ## 0.1.0
 
 - First release: one panel for your home's power, on `F2` or a lightning button in the bottom-left corner of the screen.

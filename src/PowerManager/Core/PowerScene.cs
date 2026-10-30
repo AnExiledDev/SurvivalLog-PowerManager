@@ -33,6 +33,9 @@ public sealed record Device(long Id, DeviceKey Key, string Name, bool IsOn, floa
 /// <summary>One stack of a burnable item in home storage. ItemId is the stack's own id, which the game burns one of at a time.</summary>
 public readonly record struct FuelStack(long ItemId, int ConfigId, int Count);
 
+/// <summary>An item the game burns in a generator, with the burn value one of it gives (the game's item table).</summary>
+public readonly record struct FuelItem(int ConfigId, int BurnValue);
+
 /// <summary>A load of a saved game, by the game objects behind it, so a reload is told apart from the same game going on.</summary>
 public readonly record struct GameLoad(long World, long Save);
 

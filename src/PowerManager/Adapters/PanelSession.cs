@@ -21,6 +21,7 @@ internal sealed class PanelSession
     private const float AutoOffset = 1.4f;
 
     private static readonly IReadOnlyList<FuelStack> NoStock = Array.Empty<FuelStack>();
+    private static readonly IReadOnlyList<FuelItem> NoItems = Array.Empty<FuelItem>();
 
     private readonly GamePower _game;
     private readonly WebPage _page;
@@ -44,6 +45,15 @@ internal sealed class PanelSession
     private bool _hasReportedAutoFailure;
     private GameLoad? _load;
     private IReadOnlyList<FuelStack> _stock = NoStock;
+    private IReadOnlyList<FuelItem> _fuelItems = NoItems;
+
+    // The fuel tab's JSON and what it was built from, so it is rebuilt only when the order, the storage read, the item
+    // list or the language changed.
+    private string _fuelJson = "";
+    private FuelOrder? _fuelJsonOrder;
+    private IReadOnlyList<FuelStack>? _fuelJsonStock;
+    private IReadOnlyList<FuelItem>? _fuelJsonItems;
+    private bool? _fuelJsonInChinese;
 
     public PanelSession(GamePower game, WebPage page, PanelConfig config, DeviceStore store, Action<string> log)
     {
@@ -376,6 +386,7 @@ internal sealed class PanelSession
 
         _isOpen = false;
         _stock = NoStock;
+        _fuelItems = NoItems;
         InputGate.PanelClosed();
         _page.Close();
     }
@@ -409,12 +420,28 @@ internal sealed class PanelSession
         {
             _nextFuelAt = now + FuelSeconds;
             _stock = scene == null ? NoStock : _game.Fuel();
+            _fuelItems = scene == null ? NoItems : _game.FuelItems();
         }
 
-        var order = _config.Order;
-        var (listed, spare) = PowerView.FuelLines(order, _stock, _itemName);
+        return PowerView.Json(scene, _run.Book.Low, _run.Book.Shed, _isRefuelling, FuelJson(), _config.Read(KeyName()));
+    }
 
-        return PowerView.Json(scene, _run.Book.Low, _run.Book.Shed, _isRefuelling, listed, spare, _config.Read(KeyName()));
+    private string FuelJson()
+    {
+        var order = _config.Order;
+        var isChinese = GameLanguage.IsChinese();
+
+        if (ReferenceEquals(order, _fuelJsonOrder) && ReferenceEquals(_stock, _fuelJsonStock) && ReferenceEquals(_fuelItems, _fuelJsonItems) && isChinese == _fuelJsonInChinese) return _fuelJson;
+
+        var (listed, spare) = PowerView.FuelLines(order, _stock, _fuelItems, _itemName);
+
+        _fuelJson = PowerView.FuelJson(listed, spare);
+        _fuelJsonOrder = order;
+        _fuelJsonStock = _stock;
+        _fuelJsonItems = _fuelItems;
+        _fuelJsonInChinese = isChinese;
+
+        return _fuelJson;
     }
 
     /// <summary>Kept per language, so the fuel tab's names cost a table lookup once per item.</summary>

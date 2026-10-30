@@ -33,9 +33,9 @@ No device is low priority until you mark it in the panel, so nothing is switched
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| `Order` | junk paper, then common fuels | The items used to refuel generators, by item id, first used first. Items not on the list are never used. Easiest to change on the panel's Fuel tab. |
+| `Order` | junk paper, then alcohol, then diesel | The items used to refuel generators, by item id, first used first. Items not on the list are never used. Easiest to change on the panel's Fuel tab. |
 
-The default list starts with notes, letters, flyers and other paper with no other use, then common fuels from the weakest to the strongest, so the best fuel is kept for last.
+The default list starts with notes, letters, flyers and other paper with no other use, then Poor-Quality Alcohol, Common Alcohol and High-Proof Alcohol, then Diesel, so the best fuel is kept for last. Scrap Paper, Newspaper, Entertaining Magazine, Wood Chips and Cardboard are not on it; add them on the Fuel tab if you want them burned. The Fuel tab can add any item that burns, and shows each item's burn value.
 
 ## Power
 
