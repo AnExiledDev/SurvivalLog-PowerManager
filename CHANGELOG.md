@@ -2,6 +2,7 @@
 
 ## 0.2.1
 
+- **Warning:** needs Exiled's Toolkit 0.12.0 or newer. Update the Toolkit first.
 - The panel key is now unbound by default; use the HUD button, or set a key in the settings.
 - The panel key no longer opens or closes the panel while you type in a text box.
 - Exiled's Toolkit 0.12.0 or newer is now required.
