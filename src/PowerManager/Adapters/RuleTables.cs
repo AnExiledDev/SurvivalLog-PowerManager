@@ -16,13 +16,16 @@ internal sealed class RuleTables
 {
     private const float CheckSeconds = 2f;
     private const int GeneratorType = 3;
+    private const float LeastBattery = 0.1f;
+    private const float MostBattery = 10f;
 
-    private readonly float _batteryMultiplier;
+    private readonly Func<float> _readBattery;
     private readonly Action<string> _log;
-    private readonly HashSet<IntPtr> _scaledBatteries = new();
+    private readonly Dictionary<int, TableValue> _batteries = new();
     private readonly Dictionary<int, TableValue> _generators = new();
+    private Multiplier _battery = Multiplier.GameAmount;
     private Multiplier _efficiency = Multiplier.GameAmount;
-    private bool _isEfficiencyChanged = true;
+    private bool _isChanged = true;
 
     // The table last walked, held so the game cannot free it and build the next one at the same address.
     private Il2CppSystem.Collections.Generic.Dictionary<int, Config_FurnitureElectrical>? _walked;
@@ -30,10 +33,14 @@ internal sealed class RuleTables
     private float _nextCheckAt;
     private bool _hasReportedFailure;
 
-    /// <summary>The battery multiplier is read once, at the game start, as the game sizes its storage then.</summary>
-    public RuleTables(float batteryMultiplier, Action<string> log)
+    /// <summary>
+    /// <paramref name="readBattery"/> is the BatteryMultiplier setting as it is now. It is read at each check rather
+    /// than waited for, because a world's own value is put in place as the world starts, a frame before a watcher of the
+    /// setting hears of it, and the game adds up the batteries in that same frame (see <see cref="SyncBattery"/>).
+    /// </summary>
+    public RuleTables(Func<float> readBattery, Action<string> log)
     {
-        _batteryMultiplier = batteryMultiplier;
+        _readBattery = readBattery;
         _log = log;
     }
 
@@ -45,9 +52,25 @@ internal sealed class RuleTables
         if (complaint != null) _log(complaint);
 
         _efficiency = efficiency;
-        _isEfficiencyChanged = true;
+        _isChanged = true;
         _nextCheckAt = 0f;
         _log(efficiency.IsGameAmount ? "generators make the game's power from their fuel" : $"generators make {efficiency.Value:0.##}x the game's power from their fuel");
+    }
+
+    /// <summary>Called on the main thread after a change of BatteryMultiplier, so the next frame writes it.</summary>
+    public void CheckSoon() => _nextCheckAt = 0f;
+
+    /// <summary>
+    /// Called by the game each time it adds up the batteries' capacity, just before it does. Writes the battery rows
+    /// first when the setting has changed since they were written: on a save's first count a world's own value would
+    /// otherwise not be in yet, and the game would cut the stored power down to the last world's batteries. Costs one
+    /// read of the setting when nothing changed.
+    /// </summary>
+    public void SyncBattery()
+    {
+        if (_readBattery().Equals(_battery.Requested)) return;
+
+        Check();
     }
 
     public void Tick(float now)
@@ -71,10 +94,12 @@ internal sealed class RuleTables
 
     private void Check()
     {
-        var changesBattery = _batteryMultiplier != 1f;
+        var requested = _readBattery();
+
+        if (!requested.Equals(_battery.Requested)) UseBattery(Multiplier.From(requested, LeastBattery, MostBattery));
 
         // Nothing to write until a setting leaves the game's numbers; after that, a return to 1 writes the game's back.
-        if (!changesBattery && _efficiency.IsGameAmount && _generators.Count == 0) return;
+        if (_battery.IsGameAmount && _efficiency.IsGameAmount && _batteries.Count == 0 && _generators.Count == 0) return;
 
         var rows = GameSingleton.Existing<ConfigManager>()?._Config_FurnitureElectrical_Dict;
 
@@ -85,7 +110,7 @@ internal sealed class RuleTables
         if (count == 0) return;
 
         // Every row was written when this table was last walked, and walking it again makes a new object per row.
-        if (!_isEfficiencyChanged && _walked != null && _walked.Pointer == rows.Pointer && count == _walkedCount) return;
+        if (!_isChanged && _walked != null && _walked.Pointer == rows.Pointer && count == _walkedCount) return;
 
         var batteries = 0;
         var generators = 0;
@@ -96,29 +121,51 @@ internal sealed class RuleTables
 
             var type = row._ElectricalType_k__BackingField;
 
-            if (type == BatteryCapacity.BatteryType && changesBattery && _scaledBatteries.Add(row.Pointer))
+            if (type == GeneratorType)
             {
-                var game = row._Capacity_k__BackingField;
-                var scaled = BatteryCapacity.Scale(type, game, _batteryMultiplier);
-
-                if (scaled != game)
-                {
-                    row._Capacity_k__BackingField = scaled;
-                    batteries++;
-                }
+                if (WriteGenerator(row)) generators++;
             }
-            else if (type == GeneratorType && WriteGenerator(row))
+            else if (WriteBattery(row, type))
             {
-                generators++;
+                batteries++;
             }
         }
 
         _walked = rows;
         _walkedCount = count;
-        _isEfficiencyChanged = false;
+        _isChanged = false;
 
-        if (batteries > 0) _log($"{batteries} battery types now hold {_batteryMultiplier:0.##}x the game's power");
+        if (batteries > 0) _log($"{batteries} battery types now hold {_battery.Value:0.##}x the game's power");
         if (generators > 0) _log($"{generators} generator types now make {_efficiency.Value:0.##}x the game's power");
+    }
+
+    private void UseBattery(Multiplier battery)
+    {
+        var complaint = battery.Complaint("BatteryMultiplier");
+
+        if (complaint != null) _log(complaint);
+
+        _battery = battery;
+        _isChanged = true;
+        _log(battery.IsGameAmount ? "batteries hold the game's power" : $"batteries hold {battery.Value:0.##}x the game's power");
+    }
+
+    /// <summary>Writes a battery row's capacity for the current setting; true when the row's number changed. Other rows are left alone.</summary>
+    private bool WriteBattery(Config_FurnitureElectrical row, int type)
+    {
+        var id = row._ID_k__BackingField;
+        var current = row._Capacity_k__BackingField;
+        TableValue? last = _batteries.TryGetValue(id, out var seen) ? seen : null;
+
+        if (BatteryCapacity.Next(type, current, last, _battery) is not { } next) return false;
+
+        _batteries[id] = next;
+
+        if (next.Written == current) return false;
+
+        row._Capacity_k__BackingField = next.Written;
+
+        return true;
     }
 
     /// <summary>Writes the row's power for the current setting; true when the row's number changed.</summary>

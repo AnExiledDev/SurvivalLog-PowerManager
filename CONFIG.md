@@ -1,6 +1,6 @@
 # Power Manager settings
 
-Settings live in `BepInEx\config\com.dev.survivallog.powermanager.cfg`, created the first time the game starts with the mod. Change them in game on the Mod Manager's Mods screen, or edit the file while the game is closed. Changed on the Mods screen, every setting takes effect at once except `BatteryMultiplier`, which takes effect at the next game start. `AutoRefuel`, `AutoRefuelMinutes`, `ShedBelow` and the fuel order can also be changed in the panel, which saves to this file at once. Delete the file to get the defaults back. Every default in the Power and Solar sections is the game's own rule.
+Settings live in `BepInEx\config\com.dev.survivallog.powermanager.cfg`, created the first time the game starts with the mod. Change them in game on the Mod Manager's Mods screen, or edit the file while the game is closed. Changed on the Mods screen, every setting takes effect at once. With Exiled's Toolkit 0.17.0 or newer, each world can keep its own power settings: every setting in the Power and Solar sections, plus `GeneratorEfficiency` and `FuelBurn`. Pick them for a new world in Customizable Difficulty, or, while you play, change them for that world alone on the Mods screen. The panel, refuel, shedding and fuel order settings stay the same for every world. `AutoRefuel`, `AutoRefuelMinutes`, `ShedBelow` and the fuel order can also be changed in the panel, which saves to this file at once. Delete the file to get the defaults back. Every default in the Power and Solar sections is the game's own rule.
 
 The first time the game starts with Power Manager, the power settings you changed in Game Rules (`[Power]` and `[Solar]`) and Machine Speed (`GeneratorEfficiency` and `FuelBurn`) are copied into this file. Those mods no longer have these settings. Their own files are only read, never changed.
 
@@ -41,7 +41,7 @@ The default list starts with notes, letters, flyers and other paper with no othe
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| `BatteryMultiplier` | `1` | Batteries hold this many times the game's power. 0.1 to 10. Takes effect at the next game start. |
+| `BatteryMultiplier` | `1` | Batteries hold this many times the game's power. 0.1 to 10. Lowering it drops any stored power above the new size. |
 | `DevicePowerUse` | `1` | Power that switched-on devices use, times the game's. 0 to 3. Cooking and shredding jobs, the compressor, defenses firing and the signal station are unchanged. |
 | `PowerCutDelay` | `0` | Days later than in the game that the city power is cut. 0 to 100. |
 | `NoPowerCut` | `false` | The city power is never cut. The events that follow the cut, and the diesel generator start, never come. A cut that already happened is not undone. |

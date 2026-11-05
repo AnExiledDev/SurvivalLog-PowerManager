@@ -20,8 +20,6 @@ public sealed record PowerRules(
 
     public bool ChangesSolar => SolarMultiplier != 1f || BadWeatherSolar > 0f;
 
-    public bool ChangesBattery => BatteryMultiplier != 1f;
-
     public bool ChangesDevicePower => DevicePowerUse != 1f;
 
     public bool ChangesPowerCut => NoPowerCut || PowerCutDelay > 0;
@@ -66,9 +64,13 @@ public static class BatteryCapacity
     /// <summary>The game's electrical type for a battery, the only type it counts toward stored power.</summary>
     public const int BatteryType = 5;
 
-    /// <summary>A battery's capacity times the player's multiplier. Every other electrical device keeps its own number.</summary>
-    public static float Scale(int electricalType, float gameCapacity, float multiplier) =>
-        electricalType == BatteryType ? gameCapacity * multiplier : gameCapacity;
+    /// <summary>
+    /// The capacity to write over a row of the game's electrical table, or null for a row that is not a battery (every
+    /// other device keeps its own number). The multiplier applies to the game's own capacity, never to one written
+    /// before, so changing the setting while the game runs never compounds.
+    /// </summary>
+    public static TableValue? Next(int electricalType, float current, TableValue? last, Multiplier multiplier) =>
+        electricalType == BatteryType ? TableValue.Next(current, last, multiplier) : null;
 }
 
 /// <summary>

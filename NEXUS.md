@@ -16,7 +16,7 @@ Running your home's power means walking to each generator to start it, stop it a
 [*][b]Auto-refuel[/b]: an option, off by default, that tops up a running generator, or one set to auto-start, when it has less than 60 in-game minutes of fuel left. The minutes can be changed.[/*]
 [*][b]Devices[/b]: every powered device at home with its power use and an On/Off switch.[/*]
 [*][b]Load shedding[/b]: mark devices as low priority. During a power cut they switch off when the battery falls below 20%, and back on once it is 10 points above. The level can be changed.[/*]
-[*][b]Power and solar settings[/b]: battery size, device power use, when the city power is cut or that it never is, Blackout panic, solar output and output in bad weather, generator power and fuel burn. These used to be in Game Rules and Machine Speed; values you set there are carried over the first time the game starts with Power Manager.[/*]
+[*][b]Power and solar settings[/b]: battery size, device power use, when the city power is cut or that it never is, Blackout panic, solar output and output in bad weather, generator power and fuel burn. These used to be in Game Rules and Machine Speed; values you set there are carried over the first time the game starts with Power Manager. With Exiled's Toolkit 0.17.0 or newer, each world can keep its own power settings: pick them for a new world in Customizable Difficulty, or, while you play, change them for that world alone on the Mods screen.[/*]
 [*][b]HUD button[/b]: a lightning bolt at the top of the bottom-left tool column opens the panel.[/*]
 [*][b]Messages[/b]: a line after each press says what happened. With the panel closed, auto-refuel and load shedding messages show as pop-ups.[/*]
 [*][b]UI size[/b]: the mod's own UiScale setting sizes the panel, or it follows Exiled's Toolkit's UI size.[/*]
@@ -39,7 +39,7 @@ Works in English and Chinese.
 [*]Devices that Defense Manager powers are shown but cannot be switched or marked low priority here.[/*]
 [*]A low-priority device you switch back on while the battery is still low is switched off again. Mark it normal priority to keep it on.[/*]
 [*]Device priorities are kept per save, so a new game must be saved once before devices can be marked low priority.[/*]
-[*]A change to the battery size takes effect at the next game start.[/*]
+[*]Lowering the battery size drops any stored power above the new size.[/*]
 [/list]
 
 [center][img]https://sldb.core-directive.com/img/mods-banner.jpg[/img]
@@ -66,7 +66,7 @@ If you use Game Rules or Machine Speed, update them to 0.7.0 or newer too: their
 Delete [font=Courier New]PowerManager.dll[/font] from the [font=Courier New]BepInEx\plugins[/font] folder. Devices the mod switched off to save the battery stay off; switch them on from the game's own power panel.
 
 [size=5]Configuration[/size]
-Auto-refuel, its minutes, the load shedding level and the fuel order can be changed in the panel. Everything else, such as the key and the power and solar settings, can be changed in game on the Mod Manager's Mods screen, where changes take effect at once (the battery size at the next game start), or in [font=Courier New]BepInEx\config\com.dev.survivallog.powermanager.cfg[/font] while the game is closed (see [url=https://github.com/AnExiledDev/SurvivalLog-PowerManager/blob/main/CONFIG.md]CONFIG.md[/url]; the cfg file explains each setting in English and Chinese).
+Auto-refuel, its minutes, the load shedding level and the fuel order can be changed in the panel. Everything else, such as the key and the power and solar settings, can be changed in game on the Mod Manager's Mods screen, where changes take effect at once, or in [font=Courier New]BepInEx\config\com.dev.survivallog.powermanager.cfg[/font] while the game is closed (see [url=https://github.com/AnExiledDev/SurvivalLog-PowerManager/blob/main/CONFIG.md]CONFIG.md[/url]; the cfg file explains each setting in English and Chinese).
 
 [size=5]Feedback[/size]
 Found a bug or have an idea? Come say hi on the [url=https://discord.gg/trTsyxUFqg]Core Directive Discord[/url], or post in this page's Posts tab. For bugs, please include [font=Courier New]BepInEx\LogOutput.log[/font] and [font=Courier New]BepInEx\power-manager.log[/font].
@@ -90,7 +90,7 @@ Open source under MIT: [url=https://github.com/AnExiledDev/SurvivalLog-PowerMana
 [*][b]自动加燃料[/b]：一个默认关闭的选项，开启后运行中或设为自动启动的发电机剩余燃料少于 60 游戏分钟时会自动加满。分钟数可以修改。[/*]
 [*][b]用电设备[/b]：列出家里每个用电设备的耗电量和开关。[/*]
 [*][b]负载削减[/b]：把设备标为低优先级。停电期间电量低于 20% 时它们会关闭，回升 10 个百分点后重新开启。这个电量可以修改。[/*]
-[*][b]电力和太阳能设置[/b]：蓄电池容量、设备耗电、市电何时切断或永不切断、「停电恐慌」、太阳能板发电量和恶劣天气下的发电量、发电机发电量和燃料消耗速度。这些设置原本在 Game Rules 和 Machine Speed 中；你在那里设置的数值会在首次带着 Power Manager 启动游戏时自动沿用。[/*]
+[*][b]电力和太阳能设置[/b]：蓄电池容量、设备耗电、市电何时切断或永不切断、「停电恐慌」、太阳能板发电量和恶劣天气下的发电量、发电机发电量和燃料消耗速度。这些设置原本在 Game Rules 和 Machine Speed 中；你在那里设置的数值会在首次带着 Power Manager 启动游戏时自动沿用。装了 Exiled's Toolkit 0.17.0 或更新版本时，每个存档都可以有自己的电力设置：新存档可以在「自定义难度」里选，游戏中也可以在「模组」界面只为当前存档修改。[/*]
 [*][b]HUD 按钮[/b]：左下角工具栏最上方的闪电按钮可以打开面板。[/*]
 [*][b]提示信息[/b]：每次按下按钮后会有一行说明结果。面板关闭时，自动加燃料和负载削减的提示会以弹出通知显示。[/*]
 [*][b]界面大小[/b]：本模组自己的 UiScale 设置可以调整面板大小，也可以跟随 Exiled's Toolkit 的界面大小。[/*]
@@ -113,7 +113,7 @@ Open source under MIT: [url=https://github.com/AnExiledDev/SurvivalLog-PowerMana
 [*]由 Defense Manager 控制供电的设备会显示出来，但不能在这里切换或标为低优先级。[/*]
 [*]电量仍然偏低时，你手动重新打开的低优先级设备会再次被关闭。想让它保持开启，把它改回普通优先级。[/*]
 [*]设备优先级按存档保存，所以新游戏要先保存一次才能标记低优先级设备。[/*]
-[*]蓄电池容量的修改在下次启动游戏时生效。[/*]
+[*]调低蓄电池容量后，超出新容量的储存电量会丢失。[/*]
 [/list]
 
 [url=https://www.nexusmods.com/survivallog/mods/73]获取 Mod Manager[/url]，在游戏里设置所有模组。[url=https://sldb.core-directive.com/zh/]打开 Survival Log 维基[/url]，物品、配方、地图一查就有。
@@ -139,7 +139,7 @@ Open source under MIT: [url=https://github.com/AnExiledDev/SurvivalLog-PowerMana
 从 [font=Courier New]BepInEx\plugins[/font] 文件夹中删除 [font=Courier New]PowerManager.dll[/font]。模组为节省电量而关闭的设备会保持关闭；可以在游戏自己的电力面板中重新打开。
 
 [size=5]配置[/size]
-自动加燃料、它的分钟数、负载削减的电量和燃料顺序可以在面板里修改。其他设置，例如按键以及电力和太阳能设置，可以在游戏内 Mod Manager 的「模组」界面修改（立即生效，蓄电池容量在下次启动游戏时生效），也可以在游戏关闭时编辑 [font=Courier New]BepInEx\config\com.dev.survivallog.powermanager.cfg[/font]。配置文件中每项设置都有中文说明，完整说明见 [url=https://github.com/AnExiledDev/SurvivalLog-PowerManager/blob/main/CONFIG.md]CONFIG.md[/url]（英文）。
+自动加燃料、它的分钟数、负载削减的电量和燃料顺序可以在面板里修改。其他设置，例如按键以及电力和太阳能设置，可以在游戏内 Mod Manager 的「模组」界面修改（立即生效），也可以在游戏关闭时编辑 [font=Courier New]BepInEx\config\com.dev.survivallog.powermanager.cfg[/font]。配置文件中每项设置都有中文说明，完整说明见 [url=https://github.com/AnExiledDev/SurvivalLog-PowerManager/blob/main/CONFIG.md]CONFIG.md[/url]（英文）。
 
 [size=5]反馈[/size]
 发现 bug 或有好点子？欢迎来 [url=https://discord.gg/trTsyxUFqg]Core Directive Discord[/url] 打个招呼，或在本页的「Posts」标签里发帖。报告 bug 时，请附上 [font=Courier New]BepInEx\LogOutput.log[/font] 和 [font=Courier New]BepInEx\power-manager.log[/font]。

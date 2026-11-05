@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0
+
+- Each world can keep its own power settings: every setting in Power and Solar, plus `GeneratorEfficiency` and `FuelBurn`. With Exiled's Toolkit 0.17.0 or newer, pick them for a new world in Customizable Difficulty, or change them for the world you are playing on the Mod Manager's Mods screen. The panel, refuel, shedding and fuel order settings stay the same for every world.
+- `BatteryMultiplier` now takes effect at once, without a restart. Lowering it drops any stored power above the new size.
+- The Mods screen no longer says the panel key, refuel, shedding and fuel order settings need a restart. They never did.
+- Made for Survival Log 1.1.20151.
+
 ## 0.2.2
 
 - **Warning:** needs Exiled's Toolkit 0.12.0 or newer. Update the Toolkit first.

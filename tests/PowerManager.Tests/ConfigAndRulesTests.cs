@@ -86,11 +86,38 @@ public class ConfigAndRulesTests
         Assert.False(SolarRules.Apply(new SolarReading(0f, 10f, 0f, 1f, IsBadWeather: true), rules).ClearsBadWeather);
     }
 
+    private static Multiplier Battery(float value) => Multiplier.From(value, 0.1f, 10f);
+
     [Fact]
     public void Only_batteries_are_scaled()
     {
-        Assert.Equal(300f, BatteryCapacity.Scale(BatteryCapacity.BatteryType, 100f, 3f));
-        Assert.Equal(100f, BatteryCapacity.Scale(3, 100f, 3f));
+        Assert.Equal(300f, BatteryCapacity.Next(BatteryCapacity.BatteryType, 100f, null, Battery(3f))!.Value.Written);
+        Assert.Null(BatteryCapacity.Next(3, 100f, null, Battery(3f)));
+    }
+
+    // The setting now changes while the game runs and from one world to the next, so each change must start again
+    // from the game's own capacity: a battery at 2x raised to 3x holds 3x, not 6x.
+    [Fact]
+    public void A_changed_battery_setting_never_compounds()
+    {
+        var atTwo = BatteryCapacity.Next(BatteryCapacity.BatteryType, 100f, null, Battery(2f))!.Value;
+        var atThree = BatteryCapacity.Next(BatteryCapacity.BatteryType, atTwo.Written, atTwo, Battery(3f))!.Value;
+        var backToGame = BatteryCapacity.Next(BatteryCapacity.BatteryType, atThree.Written, atThree, Battery(1f))!.Value;
+
+        Assert.Equal(200f, atTwo.Written);
+        Assert.Equal(300f, atThree.Written);
+        Assert.Equal(100f, backToGame.Written);
+    }
+
+    // A capacity that is not the one last written is a row the game loaded again with its own number.
+    [Fact]
+    public void A_battery_row_the_game_loaded_again_is_scaled_from_its_new_number()
+    {
+        var written = BatteryCapacity.Next(BatteryCapacity.BatteryType, 100f, null, Battery(2f))!.Value;
+        var reloaded = BatteryCapacity.Next(BatteryCapacity.BatteryType, 150f, written, Battery(2f))!.Value;
+
+        Assert.Equal(150f, reloaded.Game);
+        Assert.Equal(300f, reloaded.Written);
     }
 
     [Theory]

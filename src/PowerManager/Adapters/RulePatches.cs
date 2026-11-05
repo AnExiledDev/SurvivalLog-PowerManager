@@ -8,8 +8,8 @@ using PowerManagerMod.Core;
 namespace PowerManagerMod.Adapters;
 
 /// <summary>
-/// The Harmony hooks for the power rules: device power use, the city power cut, Blackout panic and how fast
-/// generators burn fuel. Each hook goes in the first time its setting leaves the game's rule and stays in; back at the
+/// The Harmony hooks for the power rules: device power use, the city power cut, Blackout panic, how fast generators
+/// burn fuel, and the battery table written just before the game counts it. Each hook goes in the first time its setting leaves the game's rule and stays in; back at the
 /// game's rule, it lets the game's own answer through. Every target was checked in GameAssembly.dll: no relative jump
 /// or call in its first 14 bytes. Every dynamic event is built by DynamicEventManager.CreateDynamicEventArgs, whose
 /// callers all handle it returning nothing, so a held-back power cut is simply not built and is offered again at the
@@ -23,6 +23,7 @@ internal static class RulePatches
     private static readonly HashSet<string> LoggedOnce = new();
     private static PowerRules _rules = PowerRules.Game;
     private static Speed _burn = Speed.GamePace;
+    private static RuleTables? _tables;
     private static Action<string> _log = _ => { };
     private static bool _isPowerHooked;
     private static bool _isCutHooked;
@@ -79,6 +80,18 @@ internal static class RulePatches
         }
 
         log(burn.IsGamePace ? "generators burn fuel at the game's pace" : $"generators burn fuel {burn.Value:0.##}x as fast");
+    }
+
+    /// <summary>
+    /// Called once at start. The game adds up the batteries' capacity in the same frame a world starts, before any live
+    /// setting is heard, and cuts the save's stored power down to it; this hook writes the world's own BatteryMultiplier
+    /// into the table first. Hooked even at the game's value, as a world may set its own.
+    /// </summary>
+    public static void UseTables(Harmony harmony, RuleTables tables, Action<string> log)
+    {
+        _log = log;
+        _tables = tables;
+        Hook(harmony, typeof(PowerManager), "CalculateCapacity", new[] { typeof(Il2CppSystem.Collections.Generic.List<Furniture>) }, prefix: nameof(SyncBattery));
     }
 
     private static void Hook(Harmony harmony, Type type, string target, Type[] parameters, string? prefix = null, string? postfix = null)
@@ -165,6 +178,19 @@ internal static class RulePatches
             LogOnce("panic failure", $"checking Blackout panic failed, it works as in the game (logged once): {ex}");
 
             return true;
+        }
+    }
+
+    /// <summary>Runs inside the game's own call; a failure leaves the table as it is until the next check.</summary>
+    private static void SyncBattery()
+    {
+        try
+        {
+            _tables?.SyncBattery();
+        }
+        catch (Exception ex)
+        {
+            LogOnce("battery failure", $"writing the battery table before the game counted it failed, it is written within seconds (logged once): {ex}");
         }
     }
 

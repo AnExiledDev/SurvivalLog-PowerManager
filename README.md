@@ -44,7 +44,7 @@ The mod's panel and messages follow the game's language: English or Simplified C
 - Devices that Defense Manager powers are shown but cannot be switched or marked low priority here.
 - A low-priority device you switch back on while the battery is still low is switched off again. Mark it normal priority to keep it on.
 - Device priorities belong to a save file, so a new game needs to be saved once before devices can be marked low priority.
-- `BatteryMultiplier` takes effect at the next game start.
+- Lowering `BatteryMultiplier` drops any stored power above the new battery size.
 - Fuel heaters are not generators and are not listed.
 
 ## Requirements
@@ -71,11 +71,11 @@ Devices the mod switched off to save the battery stay off; switch them on from t
 
 ## Configuration
 
-Settings live in `BepInEx\config\com.dev.survivallog.powermanager.cfg`, created the first time the game starts with the mod. Change them in game on the Mod Manager's Mods screen, or edit the file while the game is closed. Changed on the Mods screen, every setting takes effect at once except `BatteryMultiplier`, which takes effect at the next game start. Each setting in the cfg file is explained in English and Simplified Chinese. See [CONFIG.md](CONFIG.md) for every setting.
+Settings live in `BepInEx\config\com.dev.survivallog.powermanager.cfg`, created the first time the game starts with the mod. Change them in game on the Mod Manager's Mods screen, or edit the file while the game is closed. Changed on the Mods screen, every setting takes effect at once. With Exiled's Toolkit 0.17.0 or newer, each world can keep its own power settings: every setting in the Power and Solar sections, plus `GeneratorEfficiency` and `FuelBurn`. Pick them for a new world in Customizable Difficulty, or, while you play, change them for that world alone on the Mods screen. Each setting in the cfg file is explained in English and Simplified Chinese. See [CONFIG.md](CONFIG.md) for every setting.
 
 ## Troubleshooting
 
-Check `BepInEx\LogOutput.log` for `===== Power Manager 0.2.2 started, panel key None, battery 1x the game's`. The same line, plus one for every press and what came of it, is in `BepInEx\power-manager.log`, which survives restarts.
+Check `BepInEx\LogOutput.log` for `===== Power Manager 0.3.0 started, panel key None, battery 1x the game's`. The same line, plus one for every press and what came of it, is in `BepInEx\power-manager.log`, which survives restarts.
 
 If the panel key does nothing, check that you set one in the config (it is unbound by default), that you are in a loaded game past the prologue, that you are not typing in a text box, and that no other mod uses the same key. The HUD button works either way.
 
