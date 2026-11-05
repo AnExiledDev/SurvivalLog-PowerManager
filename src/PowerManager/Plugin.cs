@@ -7,19 +7,31 @@ using HarmonyLib;
 using PowerManagerMod.Adapters;
 using PowerManagerMod.Core;
 using ExiledToolkit;
+using ExiledToolkit.Game;
+using ExiledToolkit.Kit;
 using UnityEngine;
 
 namespace PowerManagerMod;
 
 [BepInPlugin(Guid, "Power Manager", Version)]
-[BepInDependency(OptionalLive.ToolkitGuid, OptionalLive.ToolkitVersion)]
+[BepInDependency(ToolkitGuid, ToolkitVersion)]
 // Loaded after these when they are installed, so their versions can be read (see OldMods).
 [BepInDependency(OldMods.GameRulesGuid, BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency(OldMods.MachineSpeedGuid, BepInDependency.DependencyFlags.SoftDependency)]
 public sealed class Plugin : BasePlugin
 {
     private const string Guid = "com.dev.survivallog.powermanager";
-    private const string Version = "0.3.0";
+    private const string Version = "0.3.1";
+
+    /// <summary>Exiled's Toolkit: its shared helpers, toasts, live settings, UI size and typing check all come from it.</summary>
+    private const string ToolkitGuid = "com.dev.survivallog.exiledtoolkit";
+    private const string ToolkitVersion = ">=0.19.0";
+
+    private const string LogFileName = "power-manager.log";
+
+    /// <summary>The name the page script hands its panels to the Toolkit's UI size with.</summary>
+    private const string UiSizeName = "PowerManager";
+
     private const string DefenseManagerGuid = "com.dev.survivallog.defensemanager";
     private const string DevicesFileName = Guid + ".devices.txt";
     private const string GeneratorsSection = "Generators";
@@ -36,10 +48,10 @@ public sealed class Plugin : BasePlugin
 
     public override void Load()
     {
-        var log = new PowerLog(Log, Path.Combine(Paths.BepInExRootPath, "power-manager.log"));
+        var log = new ModLog(Log, LogFileName);
         var isFirstStart = IsFirstStart(log.Write);
 
-        OptionalUiSize.Bind(Config);
+        ModUiSize.Bind(Config, UiSizeName);
 
         var panelKey = Config.Bind("Controls", "PanelKey", Enum.Parse<KeyCode>(Hotkey.DefaultKey), Live(
             "Key that opens and closes the Power Manager panel. Unbound by default: the lightning button in the bottom-left corner of the screen opens the panel. Set a key here to open it from the keyboard too.\n" +
@@ -68,37 +80,35 @@ public sealed class Plugin : BasePlugin
 
         if (isFirstStart) ImportOldSettings(log.Write);
 
-        var harmony = new Harmony(Guid);
+        var hooks = new PatchKit(new Harmony(Guid), log.Write);
         var isDefenseManagerLoaded = IL2CPPChainloader.Instance.Plugins.ContainsKey(DefenseManagerGuid);
         var isGameRulesOld = OldMods.IsOld(InstalledVersion(OldMods.GameRulesGuid));
         var isMachineSpeedOld = OldMods.IsOld(InstalledVersion(OldMods.MachineSpeedGuid));
         var tables = new RuleTables(isGameRulesOld ? () => 1f : () => rules.BatteryMultiplier.Value, log.Write);
         var config = new PanelConfig(panelKey, autoRefuel, autoRefuelMinutes, shedBelow, fuelOrder);
         var store = new DeviceStore(Path.Combine(Paths.ConfigPath, DevicesFileName), log.Write);
-        var session = new PanelSession(new GamePower(log.Write, isDefenseManagerLoaded), new WebPage(log.Write), config, store, log.Write);
+        var session = new PanelSession(new GamePower(log.Write, isDefenseManagerLoaded), new PowerPage(log.Write), config, store, log.Write);
 
         log.Write($"===== Power Manager {Version} started, panel key {panelKey.Value}, battery {(isGameRulesOld ? 1f : rules.BatteryMultiplier.Value):0.##}x the game's");
         WarnOldMods(isGameRulesOld, isMachineSpeedOld, log.Write);
-        InputGate.Apply(harmony, log.Write);
-        PageMessages.Apply(harmony, log.Write);
 
         if (!isGameRulesOld)
         {
-            OptionalLive.Watch(() =>
+            LiveSettings.Watch(() =>
             {
                 var read = rules.Read();
 
-                RulePatches.Use(harmony, read, log.Write);
+                RulePatches.Use(hooks, read, log.Write);
                 SolarDetour.Use(read, log.Write);
             }, rules.SolarMultiplier, rules.BadWeatherOutput, rules.DevicePowerUse, rules.PowerCutDelay, rules.NoPowerCut, rules.NoBlackoutPanic);
-            OptionalLive.Watch(rules.BatteryMultiplier, _ => tables.CheckSoon());
-            RulePatches.UseTables(harmony, tables, log.Write);
+            LiveSettings.Watch(rules.BatteryMultiplier, _ => tables.CheckSoon());
+            RulePatches.UseTables(hooks, tables, log.Write);
         }
 
         if (!isMachineSpeedOld)
         {
-            OptionalLive.Watch(fuelBurn, value => RulePatches.UseBurn(harmony, Speed.From(value), log.Write));
-            OptionalLive.Watch(efficiency, value => tables.UseEfficiency(Multiplier.From(value, 0.1f, 100f)));
+            LiveSettings.Watch(fuelBurn, value => RulePatches.UseBurn(hooks, Speed.From(value), log.Write));
+            LiveSettings.Watch(efficiency, value => tables.UseEfficiency(Multiplier.From(value, 0.1f, 100f)));
         }
 
         PowerTicker.Tables = tables;

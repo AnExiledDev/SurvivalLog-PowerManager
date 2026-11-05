@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1
+
+- Now uses Exiled's Toolkit for its shared parts, so it needs Exiled's Toolkit 0.19.0 or newer.
+- Made for Survival Log 1.1.20719.
+
 ## 0.3.0
 
 - Each world can keep its own power settings: every setting in Power and Solar, plus `GeneratorEfficiency` and `FuelBurn`. With Exiled's Toolkit 0.17.0 or newer, pick them for a new world in Customizable Difficulty, or change them for the world you are playing on the Mod Manager's Mods screen. The panel, refuel, shedding and fuel order settings stay the same for every world.

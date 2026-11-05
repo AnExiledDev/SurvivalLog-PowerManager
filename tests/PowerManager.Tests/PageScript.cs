@@ -1,20 +1,29 @@
+using ExiledToolkit.Web;
 using PowerManagerMod.Core;
 using Jint;
 
 namespace PowerManagerMod.Tests;
 
 /// <summary>
-/// page.js exactly as the plugin embeds it, run in Jint on top of FakePage.js (Root.html, the game's HUD page and the
-/// vuplex bridge). The calls into the script are the ones WebPage makes, and what the script posts is parsed with the
-/// real PageCommand, so a test sees the commands the plugin would act on.
+/// page.js exactly as the plugin embeds it, run in Jint with Exiled's Toolkit's page API (api.js, from the Toolkit's
+/// source) on top of FakePage.js (Root.html, the game's HUD page and the vuplex bridge). The calls into the script are
+/// the ones PowerPage makes, and what the script posts is parsed with the real PageCommand, so a test sees the commands
+/// the plugin would act on.
 /// </summary>
 internal sealed class PageScript
 {
     private readonly Engine _engine = new();
 
-    public PageScript()
+    /// <param name="isToolkitFirst">
+    /// The game runs the Toolkit's script first, or with false Power Manager's first; then the Toolkit's runs only at
+    /// <see cref="LoadToolkit"/>.
+    /// </param>
+    public PageScript(bool isToolkitFirst = true)
     {
         _engine.Execute(Resource("PowerManager.Tests.FakePage.js"));
+
+        if (isToolkitFirst) _engine.Execute(ToolkitApi);
+
         _engine.Execute(Source);
         Hear();
     }
@@ -22,11 +31,20 @@ internal sealed class PageScript
     /// <summary>page.js as the plugin embeds it.</summary>
     public static string Source { get; } = Resource("PowerManager.page.js");
 
+    /// <summary>The Toolkit's page API, from its source folder.</summary>
+    private static string ToolkitApi { get; } = Resource("ExiledToolkit.api.js");
+
     /// <summary>Every command the script sent the plugin, its ready message and diag notes aside.</summary>
     public List<PageCommand> Sent { get; } = new();
 
     /// <summary>The script's "diag|" notes, as the plugin logs them.</summary>
     public List<string> Notes { get; } = new();
+
+    /// <summary>Whether the script told the plugin it is ready, which has the plugin send it everything again.</summary>
+    public bool HasSaidReady { get; private set; }
+
+    /// <summary>The Toolkit's page API arriving after Power Manager's script.</summary>
+    public void LoadToolkit() => Run(ToolkitApi);
 
     public void Run(string statements)
     {
@@ -38,7 +56,7 @@ internal sealed class PageScript
 
     public bool Is(string expression) => _engine.Evaluate($"!!({expression})").AsBoolean();
 
-    /// <summary>One run of the script's 400 ms page check.</summary>
+    /// <summary>One run of the Toolkit's 250 ms page check.</summary>
     public void Poll() => Run("poll()");
 
     public void Click(string expression) => Run($"click({expression})");
@@ -47,7 +65,7 @@ internal sealed class PageScript
 
     public void Open(string viewJson) => Call($"open({viewJson})");
 
-    /// <summary>A refresh of the open panel, as WebPage.Show sends it.</summary>
+    /// <summary>A refresh of the open panel, as PowerPage.Show sends it.</summary>
     public void Show(string viewJson) => Call($"setData({viewJson})");
 
     public void Status(string text) => Call($"status({JsText.Literal(text)})");
@@ -70,6 +88,7 @@ internal sealed class PageScript
         switch (command)
         {
             case PageCommand.Ready:
+                HasSaidReady = true;
                 break;
             case PageCommand.Unknown unknown:
                 Notes.Add(unknown.Text);

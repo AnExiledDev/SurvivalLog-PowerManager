@@ -1,15 +1,16 @@
 // Power Manager's web half. Runs in Root.html, the document every game page iframe sits in. Draws the panel over all
 // of them in the warm gold look of the other mod panels: the battery, the generators and the powered devices, a tab for
 // the fuel order, and one for settings. It also puts a button in the HUD's tool column (bottom left, above the phone
-// and bag buttons), built like the game's own buttons there so it reads as part of the game. Talks to the plugin
-// through vuplex.postMessage("slmod|powermanager|<verb>") and is driven by window.__slpower.
+// and bag buttons) through Exiled's Toolkit, built like the game's own buttons there so it reads as part of the game.
+// Talks to the plugin through the Toolkit's send ("slmod|powermanager|<verb>") and is driven by window.__slpower.
 (function () {
   if (window.__slpower) return;
 
   var PREFIX = 'slmod|powermanager|';
   var HUD_CLASS = 'pm-hud-btn';
   // Where the button sits in the tool column among the other mods' buttons (Exiled's Toolkit sorts them by this).
-  var DOCK_ORDER = '50';
+  var DOCK_ORDER = 50;
+  var UI_SIZE_NAME = 'PowerManager';
   var BUSY_TIMEOUT_MS = 5000;
   var SVG_NS = 'http://www.w3.org/2000/svg';
   var BOLT_PATH = 'M13 2L4 14h6l-1 8 9-12h-6z';
@@ -29,8 +30,13 @@
   var ui = null;
   var isBusy = false;
   var busyTimer = 0;
-  var hasReportedPageAccess = false;
   var hasReportedHudPlaced = false;
+
+  // The Toolkit's page API (window.ExiledToolkit). The game can run its script after this one, so this stays null
+  // until it has; the HUD button and the messages to the plugin start then.
+  var etk = null;
+  // The bolt button in the HUD's tool column. The Toolkit keeps it there and writes changes into it in place.
+  var hudButton = null;
 
   function emptyData() {
     return { game: false, battery: null, gens: [], devs: [], order: [], spare: [], set: null };
@@ -46,10 +52,9 @@
     return text;
   }
 
+  // Through the Toolkit's bridge. Nothing goes before its page API is there; the page says it is ready once it is.
   function send(message) {
-    try {
-      if (window.vuplex) window.vuplex.postMessage(PREFIX + message);
-    } catch (e) {}
+    if (etk) etk.send(PREFIX, message);
   }
 
   // One press at a time: a double click would otherwise ask twice. Every press is answered by a status line, which
@@ -197,8 +202,6 @@
   function build() {
     if (ui && document.body.contains(ui.root)) return;
 
-    addStyle();
-
     var root = el('div');
     root.id = 'pm-root';
     var plate = el('div', 'pm-plate unity-interactive');
@@ -213,42 +216,20 @@
     root.appendChild(plate);
 
     document.body.appendChild(root);
-
-    // Drawn at the player's UI size (Exiled's Toolkit). The full-screen mask always fills the screen, so the window on
-    // it is what must fit.
-    uiSize(root, { fit: plate });
-
     root.addEventListener('click', onClick);
     // Clicks inside the plate must not reach the game pages underneath; the mask itself closes nothing on purpose.
     root.addEventListener('mousedown', function (e) { e.stopPropagation(); });
 
-    ui = { root: root, head: head, body: body, status: status, keys: keys };
+    ui = { root: root, plate: plate, head: head, body: body, status: status, keys: keys };
+
+    if (etk) dressPanel();
   }
 
-  // Hands a panel to Exiled's Toolkit to be drawn at the player's UI size. Before the Toolkit's script has loaded it
-  // waits in a list the Toolkit reads.
-  function uiSize(node, options) {
-    options = Object.assign({ mod: 'PowerManager' }, options);
-    var toolkit = window.ExiledUi;
-
-    if (toolkit) {
-      toolkit.size(node, options);
-      return;
-    }
-
-    var waiting = window.__exiledUiWait = window.__exiledUiWait || [];
-    waiting.push([node, options]);
-    if (waiting.length > 32) waiting.shift();
-  }
-
-  // The style outlives a lost panel root, so a rebuild must not stack another copy of it.
-  function addStyle() {
-    if (document.getElementById('pm-style')) return;
-
-    var style = el('style');
-    style.id = 'pm-style';
-    style.textContent = CSS;
-    document.head.appendChild(style);
+  // The panel's style, and the player's UI size from the Toolkit. The full-screen mask always fills the screen, so the
+  // window on it is what must fit. A panel drawn before the Toolkit arrived gets both when it does.
+  function dressPanel() {
+    etk.addStyle(document, 'pm-style', CSS);
+    etk.size(ui.root, { mod: UI_SIZE_NAME, fit: ui.plate });
   }
 
   function onClick(e) {
@@ -597,150 +578,36 @@
 
     if (ui && state.isOpen) renderKeys();
 
-    patchPagesSafely();
+    showHudState();
   }
 
-  // The HUD is a same-origin iframe, so its document can be reached from here; polled because the game creates and
-  // drops that iframe whenever it likes.
-  function patchPages() {
-    var frames = document.querySelectorAll('iframe');
+  // Shown only in a game, with the panel key and the tip in the game's language. The Toolkit puts the button first in
+  // the tool column, where the game's own buttons do not move, and puts it back whenever the HUD page is rebuilt.
+  function showHudState() {
+    if (!hudButton) return;
 
-    placedHud = null;
-
-    for (var i = 0; i < frames.length; i++) {
-      var src = frames[i].src || '';
-
-      if (!/CoreUI1\.html/.test(src)) continue;
-
-      var doc = null;
-
-      try {
-        doc = frames[i].contentDocument;
-      } catch (e) {}
-
-      if (!doc) {
-        if (!hasReportedPageAccess) send('diag|cannot reach a game page document (root ' + location.protocol + ', iframe ' + src + ')');
-        hasReportedPageAccess = true;
-        continue;
-      }
-
-      placeHudButton(frames[i], doc);
-    }
+    hudButton.update({ shown: state.isLive, key: state.key, tip: say('tip') });
   }
 
-  function patchPagesSafely() {
-    try {
-      patchPages();
-    } catch (e) {}
-  }
-
-  // What this script last put on the HUD, with the iframe and document it went into. The 400 ms check looks for
-  // iframes only when the button is gone or out of date; outside a game, with nothing placed, it does nothing.
-  var placedHud = null;
-
-  function checkPages() {
-    try {
-      if (!state.isLive && !placedHud) return;
-      if (isHudPlaced()) return;
-
-      patchPages();
-    } catch (e) {}
-  }
-
-  // A node in an iframe the game dropped, or in a document the iframe has since replaced, still reads as connected to
-  // its own document, so the iframe and its document are checked too.
-  function isHudPlaced() {
-    var placed = placedHud;
-
-    return !!placed && state.isLive && placed.frame.isConnected && placed.frame.contentDocument === placed.doc &&
-      placed.column.isConnected && placed.node.parentNode === placed.column && placed.node.getAttribute('data-key') === state.key;
-  }
-
-  // First in the tool column: the column is anchored at the bottom, so the first child sits on top and the game's own
-  // buttons do not move. The column hides itself in build mode, and the button with it.
-  function placeHudButton(frame, doc) {
-    var column = doc.querySelector('.vertical-tools');
-    var existing = doc.querySelector('.' + HUD_CLASS);
-
-    if (!column || !state.isLive) {
-      if (existing) existing.remove();
-
-      return;
-    }
-
-    if (existing && existing.parentNode === column && existing.getAttribute('data-key') === state.key) {
-      placedHud = { frame: frame, doc: doc, column: column, node: existing };
-
-      return;
-    }
-
-    if (existing) existing.remove();
-
-    var node = hudButton(doc);
-
-    node.setAttribute('data-etk-dock', DOCK_ORDER);
-    column.insertBefore(node, column.firstChild);
-    placedHud = { frame: frame, doc: doc, column: column, node: node };
-
+  function noteHudPlaced() {
     if (!hasReportedHudPlaced) send('diag|HUD button placed in the tool column');
     hasReportedHudPlaced = true;
   }
 
-  // The same markup as the game's bag button: its classes, an svg icon, and the hover tip its stylesheet shows. The
-  // HUD page watches its body for new buttons and tells the game where they are, so a click on this one reaches it.
-  function hudButton(doc) {
-    var node = doc.createElement('button');
-    node.className = 'ui-btn icon-sq interactive-btn has-entry-tip ' + HUD_CLASS;
-    node.setAttribute('data-interactive', '');
-    node.setAttribute('data-key', state.key);
-    node.appendChild(bolt(doc));
-    node.appendChild(entryTip(doc));
-    node.addEventListener('click', function (e) {
-      e.stopPropagation();
-      send('toggle');
+  // Runs once the Toolkit's page API is there: at once when its script ran first, else when it runs.
+  function startWithToolkit(api) {
+    etk = api;
+
+    if (ui) dressPanel();
+
+    hudButton = etk.addHudButton({
+      id: HUD_CLASS, order: DOCK_ORDER, icon: BOLT_PATH, title: 'Power Manager', tip: say('tip'), key: state.key, shown: state.isLive,
+      onClick: function () { send('toggle'); },
+      onPlace: noteHudPlaced
     });
-
-    return node;
+    send('ready');
   }
-
-  function bolt(doc) {
-    var icon = doc.createElementNS(SVG_NS, 'svg');
-    var path = doc.createElementNS(SVG_NS, 'path');
-
-    icon.setAttribute('class', 'icon-svg');
-    icon.setAttribute('viewBox', '0 0 24 24');
-    path.setAttribute('d', BOLT_PATH);
-    icon.appendChild(path);
-
-    return icon;
-  }
-
-  function entryTip(doc) {
-    var tip = doc.createElement('div');
-    var title = doc.createElement('div');
-    var body = doc.createElement('div');
-
-    tip.className = 'entry-tip';
-    title.className = 'entry-tip-title';
-    title.textContent = 'Power Manager';
-    body.className = 'entry-tip-body';
-    body.textContent = say('tip');
-
-    if (state.key) {
-      var key = doc.createElement('span');
-      key.className = 'entry-tip-key';
-      key.textContent = state.key;
-      title.appendChild(key);
-    }
-
-    tip.appendChild(title);
-    tip.appendChild(body);
-
-    return tip;
-  }
-
-  setInterval(checkPages, 400);
 
   window.__slpower = { open: open, setData: setData, close: close, status: status, live: live };
-  send('ready');
+  (window.ExiledToolkitReady = window.ExiledToolkitReady || []).push(startWithToolkit);
 })();

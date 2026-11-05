@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GameCore.HotUpdate;
 using GameCore.HotUpdate.Battle.Logic;
 using GameCore.HotUpdate.StrangerTrade;
+using ExiledToolkit.Game;
 using PowerManagerMod.Core;
 
 namespace PowerManagerMod.Adapters;
@@ -150,12 +151,8 @@ internal sealed class GamePower : IPowerGame
         try
         {
             var config = GameSingleton.Existing<ConfigManager>();
-            var rows = config?._Config_Item_Dict;
 
-            if (config != null && rows != null && rows.TryGetValue(configId, out var row) && row != null)
-            {
-                return Translate(config, row._ItemName_k__BackingField) ?? NonEmpty(row._ItemName_Local_k__BackingField) ?? NonEmpty(row._ItemName_k__BackingField) ?? $"#{configId}";
-            }
+            if (config != null && GameNames.ItemName(config, configId) is { } name) return name;
         }
         catch (Exception ex)
         {
@@ -404,18 +401,7 @@ internal sealed class GamePower : IPowerGame
     }
 
     private static string NameOf(ConfigManager config, Config_Furniture row, int configId) =>
-        Translate(config, row._Name_k__BackingField) ?? NonEmpty(row._Name_Local_k__BackingField) ?? NonEmpty(row._Name_k__BackingField) ?? $"#{configId}";
-
-    private static string? Translate(ConfigManager config, string? key)
-    {
-        if (string.IsNullOrEmpty(key)) return null;
-
-        var text = config.GetLocalTxt(key);
-
-        return string.IsNullOrEmpty(text) || text == key ? null : text;
-    }
-
-    private static string? NonEmpty(string? text) => string.IsNullOrWhiteSpace(text) ? null : text;
+        GameNames.Translate(config, row._Name_k__BackingField) ?? GameNames.NonEmpty(row._Name_Local_k__BackingField) ?? GameNames.NonEmpty(row._Name_k__BackingField) ?? $"#{configId}";
 
     private void ReportOnce(string operation, Exception ex)
     {

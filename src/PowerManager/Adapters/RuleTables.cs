@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GameCore.HotUpdate;
+using ExiledToolkit.Game;
 using PowerManagerMod.Core;
 
 namespace PowerManagerMod.Adapters;

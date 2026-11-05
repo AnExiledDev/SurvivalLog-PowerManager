@@ -49,9 +49,9 @@ The mod's panel and messages follow the game's language: English or Simplified C
 
 ## Requirements
 
-- Survival Log 1.1.20151. Built and tested on this version; a game update can break it until the mod is updated.
+- Survival Log 1.1.20719. Built and tested on this version; a game update can break it until the mod is updated.
 - The [BepInEx Pack for Survival Log](https://www.nexusmods.com/survivallog/mods/12), the BepInEx 6 (IL2CPP) build for the game.
-- [Exiled's Toolkit](https://github.com/AnExiledDev/SurvivalLog-ExiledToolkit) 0.12.0 or newer. Power Manager does not load without it. It keeps the panel key quiet while you type, shows messages as pop-ups while the panel is closed, applies settings changed on the Mod Manager's Mods screen without a restart, and lays out the HUD's tool buttons.
+- [Exiled's Toolkit](https://github.com/AnExiledDev/SurvivalLog-ExiledToolkit) 0.19.0 or newer. Power Manager does not load without it. It keeps the panel key quiet while you type, shows messages as pop-ups while the panel is closed, applies settings changed on the Mod Manager's Mods screen without a restart, and lays out the HUD's tool buttons.
 
 ## Install
 
@@ -75,7 +75,7 @@ Settings live in `BepInEx\config\com.dev.survivallog.powermanager.cfg`, created 
 
 ## Troubleshooting
 
-Check `BepInEx\LogOutput.log` for `===== Power Manager 0.3.0 started, panel key None, battery 1x the game's`. The same line, plus one for every press and what came of it, is in `BepInEx\power-manager.log`, which survives restarts.
+Check `BepInEx\LogOutput.log` for `===== Power Manager 0.3.1 started, panel key None, battery 1x the game's`. The same line, plus one for every press and what came of it, is in `BepInEx\power-manager.log`, which survives restarts.
 
 If the panel key does nothing, check that you set one in the config (it is unbound by default), that you are in a loaded game past the prologue, that you are not typing in a text box, and that no other mod uses the same key. The HUD button works either way.
 

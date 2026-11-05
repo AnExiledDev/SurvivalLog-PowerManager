@@ -94,6 +94,61 @@ public class PageScriptTests
         Assert.False(page.Is("hudButton()"));
     }
 
+    // ===== Load order (Exiled's Toolkit's page API) =====
+
+    /// <summary>The plugin sends everything again when the page says it is ready, so the page must say it once it can work.</summary>
+    [Fact]
+    public void With_the_Toolkit_loaded_first_the_page_says_ready_and_shows_its_button()
+    {
+        var page = new PageScript(isToolkitFirst: true);
+
+        page.Run("openHud()");
+        page.Live(true, "F2");
+
+        Assert.True(page.HasSaidReady);
+        Assert.True(page.Is("hudButton()"));
+    }
+
+    /// <summary>
+    /// The game can run Power Manager's script before the Toolkit's. Until the Toolkit's arrives the page says nothing,
+    /// and then it says it is ready and shows the button with what the plugin already sent.
+    /// </summary>
+    [Fact]
+    public void With_the_page_loaded_first_it_waits_for_the_Toolkit_then_says_ready_and_shows_its_button()
+    {
+        var page = new PageScript(isToolkitFirst: false);
+
+        page.Run(PageWords.Script(false));
+        page.Run("openHud()");
+        page.Live(true, "F2");
+
+        Assert.False(page.HasSaidReady);
+        Assert.False(page.Is("hudButton()"));
+
+        page.LoadToolkit();
+
+        Assert.True(page.HasSaidReady);
+        Assert.True(page.Is("hudButton().parentNode.firstChild === hudButton()"));
+        Assert.Equal("F2", page.Text("hudButton().querySelector('.entry-tip-key').textContent"));
+    }
+
+    /// <summary>A panel opened before the Toolkit's script ran is drawn at once and gets its style when the Toolkit arrives.</summary>
+    [Fact]
+    public void A_panel_opened_before_the_Toolkit_loaded_gets_its_style_when_it_arrives()
+    {
+        var page = new PageScript(isToolkitFirst: false);
+
+        page.Run(PageWords.Script(false));
+        page.Open(View());
+
+        Assert.True(page.Is("document.getElementById('pm-root')"));
+        Assert.False(page.Is("document.getElementById('pm-style')"));
+
+        page.LoadToolkit();
+
+        Assert.True(page.Is("document.getElementById('pm-style').textContent.indexOf('#pm-root') >= 0"));
+    }
+
     [Fact]
     public void Generator_buttons_send_the_full_id_and_the_new_auto_start_level()
     {

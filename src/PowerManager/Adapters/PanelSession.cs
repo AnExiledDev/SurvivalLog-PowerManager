@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using ExiledToolkit;
+using ExiledToolkit.Game;
+using ExiledToolkit.Kit;
+using ExiledToolkit.Web;
 using PowerManagerMod.Core;
 using UnityEngine;
 
@@ -9,10 +12,13 @@ namespace PowerManagerMod.Adapters;
 /// <summary>
 /// The panel's game side, run once a frame: its open state, the view it sends to page.js, the presses the page asks
 /// for, the queued work (one game call a frame) and the automatic pass (load shedding and auto-refuel). Page messages
-/// arrive on the web view's thread, so they are queued and handled here, in this frame.
+/// arrive on the web view's thread, so Exiled's Toolkit queues them and they are handled here, in this frame.
 /// </summary>
 internal sealed class PanelSession
 {
+    /// <summary>The name the panel holds the game's hotkeys and clicks under while it is open.</summary>
+    private const string WindowName = "PowerManager.panel";
+
     private const float RefreshSeconds = 1f;
     private const float LiveSeconds = 1f;
     private const float LiveOffset = 0.25f;
@@ -23,8 +29,9 @@ internal sealed class PanelSession
     private static readonly IReadOnlyList<FuelStack> NoStock = Array.Empty<FuelStack>();
     private static readonly IReadOnlyList<FuelItem> NoItems = Array.Empty<FuelItem>();
 
+    private readonly PageMailbox _messages = PageInbox.Listen(PageCommand.Prefix);
     private readonly GamePower _game;
-    private readonly WebPage _page;
+    private readonly PowerPage _page;
     private readonly PanelConfig _config;
     private readonly DeviceStore _store;
     private readonly PowerRun _run;
@@ -57,7 +64,7 @@ internal sealed class PanelSession
     private IReadOnlyList<FuelItem>? _fuelJsonItems;
     private bool? _fuelJsonInChinese;
 
-    public PanelSession(GamePower game, WebPage page, PanelConfig config, DeviceStore store, Action<string> log)
+    public PanelSession(GamePower game, PowerPage page, PanelConfig config, DeviceStore store, Action<string> log)
     {
         _game = game;
         _page = page;
@@ -74,10 +81,10 @@ internal sealed class PanelSession
 
     public void Update()
     {
-        var now = Clock.Now();
+        var now = PowerTicker.Now();
         _page.KeepInstalled(now);
 
-        while (PageMessages.TryTake(out var command)) HandleSafely(command);
+        while (_messages.TryTake(out var message)) HandleSafely(PageCommand.Parse(message));
 
         if (now >= _nextLiveAt) SendLive(now);
 
@@ -339,7 +346,7 @@ internal sealed class PanelSession
     /// </summary>
     private void SendLive(float now)
     {
-        // On its own beat, off the frames of the automatic pass and the page check (see WebPage), so their work never
+        // On its own beat, off the frames of the automatic pass and the page check (see PowerPage), so their work never
         // shares a frame; a long stall starts the beat again.
         _nextLiveAt += LiveSeconds;
 
@@ -378,8 +385,8 @@ internal sealed class PanelSession
 
         _isOpen = true;
         _nextFuelAt = 0f;
-        InputGate.PanelOpened();
-        _shownView = ReadView(Clock.Now());
+        InputGate.Opened(WindowName);
+        _shownView = ReadView(PowerTicker.Now());
         _page.Open(_shownView);
         _log("panel opened");
     }
@@ -391,7 +398,7 @@ internal sealed class PanelSession
         _isOpen = false;
         _stock = NoStock;
         _fuelItems = NoItems;
-        InputGate.PanelClosed();
+        InputGate.Closed(WindowName);
         _page.Close();
     }
 
@@ -410,7 +417,7 @@ internal sealed class PanelSession
     {
         if (!_isOpen) return;
 
-        _shownView = ReadView(Clock.Now());
+        _shownView = ReadView(PowerTicker.Now());
         _page.Open(_shownView);
     }
 

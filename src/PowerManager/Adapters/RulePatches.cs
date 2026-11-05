@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using GameCore.HotUpdate;
 using GameCore.HotUpdate.Battle.Logic;
-using HarmonyLib;
+using ExiledToolkit.Game;
 using PowerManagerMod.Core;
 
 namespace PowerManagerMod.Adapters;
@@ -25,13 +25,14 @@ internal static class RulePatches
     private static Speed _burn = Speed.GamePace;
     private static RuleTables? _tables;
     private static Action<string> _log = _ => { };
+    private static PatchKit? _hooks;
     private static bool _isPowerHooked;
     private static bool _isCutHooked;
     private static bool _isPanicHooked;
     private static bool _isBurnHooked;
 
     /// <summary>Called on the main thread at start and after each change.</summary>
-    public static void Use(Harmony harmony, PowerRules rules, Action<string> log)
+    public static void Use(PatchKit hooks, PowerRules rules, Action<string> log)
     {
         _log = log;
         _rules = rules;
@@ -39,20 +40,20 @@ internal static class RulePatches
         if (rules.ChangesDevicePower && !_isPowerHooked)
         {
             _isPowerHooked = true;
-            Hook(harmony, typeof(PowerManager), "GetEffectivePowerCost", new[] { typeof(Config_Furniture), typeof(long) }, postfix: nameof(ScalePowerCost));
+            Hook(hooks, typeof(PowerManager), "GetEffectivePowerCost", new[] { typeof(Config_Furniture), typeof(long) }, postfix: nameof(ScalePowerCost));
         }
 
         if (rules.ChangesPowerCut && !_isCutHooked)
         {
             _isCutHooked = true;
-            Hook(harmony, typeof(DynamicEventManager), nameof(DynamicEventManager.CreateDynamicEventArgs),
+            Hook(hooks, typeof(DynamicEventManager), nameof(DynamicEventManager.CreateDynamicEventArgs),
                 new[] { typeof(DynamicEventConfig), typeof(bool), typeof(bool), typeof(bool) }, prefix: nameof(HoldPowerCut));
         }
 
         if (rules.NoBlackoutPanic && !_isPanicHooked)
         {
             _isPanicHooked = true;
-            Hook(harmony, typeof(PowerManager), "SyncBlackoutPanicBuff", Type.EmptyTypes, prefix: nameof(ClearPanic));
+            Hook(hooks, typeof(PowerManager), "SyncBlackoutPanicBuff", Type.EmptyTypes, prefix: nameof(ClearPanic));
         }
 
         log(rules.ChangesDevicePower ? $"devices use {rules.DevicePowerUse:0.##}x the game's power" : "devices use the game's power");
@@ -63,7 +64,7 @@ internal static class RulePatches
     }
 
     /// <summary>Called on the main thread at start and after each change of FuelBurn.</summary>
-    public static void UseBurn(Harmony harmony, Speed burn, Action<string> log)
+    public static void UseBurn(PatchKit hooks, Speed burn, Action<string> log)
     {
         _log = log;
         _burn = burn;
@@ -75,8 +76,8 @@ internal static class RulePatches
         if (!burn.IsGamePace && !_isBurnHooked)
         {
             _isBurnHooked = true;
-            Hook(harmony, typeof(GeneratorFuelComponent), nameof(GeneratorFuelComponent.ConsumeFuel), new[] { typeof(float) }, prefix: nameof(ScaleBurn));
-            Hook(harmony, typeof(GeneratorFuelComponent), nameof(GeneratorFuelComponent.GetRemainingGameSeconds), Type.EmptyTypes, postfix: nameof(ScaleTimeLeft));
+            Hook(hooks, typeof(GeneratorFuelComponent), nameof(GeneratorFuelComponent.ConsumeFuel), new[] { typeof(float) }, prefix: nameof(ScaleBurn));
+            Hook(hooks, typeof(GeneratorFuelComponent), nameof(GeneratorFuelComponent.GetRemainingGameSeconds), Type.EmptyTypes, postfix: nameof(ScaleTimeLeft));
         }
 
         log(burn.IsGamePace ? "generators burn fuel at the game's pace" : $"generators burn fuel {burn.Value:0.##}x as fast");
@@ -87,27 +88,18 @@ internal static class RulePatches
     /// setting is heard, and cuts the save's stored power down to it; this hook writes the world's own BatteryMultiplier
     /// into the table first. Hooked even at the game's value, as a world may set its own.
     /// </summary>
-    public static void UseTables(Harmony harmony, RuleTables tables, Action<string> log)
+    public static void UseTables(PatchKit hooks, RuleTables tables, Action<string> log)
     {
         _log = log;
         _tables = tables;
-        Hook(harmony, typeof(PowerManager), "CalculateCapacity", new[] { typeof(Il2CppSystem.Collections.Generic.List<Furniture>) }, prefix: nameof(SyncBattery));
+        Hook(hooks, typeof(PowerManager), "CalculateCapacity", new[] { typeof(Il2CppSystem.Collections.Generic.List<Furniture>) }, prefix: nameof(SyncBattery));
     }
 
-    private static void Hook(Harmony harmony, Type type, string target, Type[] parameters, string? prefix = null, string? postfix = null)
+    /// <summary>A hook that cannot go in is logged as "could not hook", and its rule stays the game's.</summary>
+    private static void Hook(PatchKit hooks, Type type, string target, Type[] parameters, string? prefix = null, string? postfix = null)
     {
-        try
-        {
-            var method = AccessTools.Method(type, target, parameters) ?? throw new MissingMethodException($"{type.Name}.{target}");
-
-            harmony.Patch(method,
-                prefix: prefix == null ? null : new HarmonyMethod(typeof(RulePatches), prefix),
-                postfix: postfix == null ? null : new HarmonyMethod(typeof(RulePatches), postfix));
-        }
-        catch (Exception ex)
-        {
-            _log($"{HookFailure.Prefix} {type.Name}.{target}, it keeps the game's rules: {ex.Message}");
-        }
+        _hooks = hooks;
+        hooks.Patch(typeof(RulePatches), type, target, parameters, prefix, postfix, consequence: "it keeps the game's rules");
     }
 
     /// <summary>Runs inside the game's own call; an escaping exception would reach native code.</summary>
@@ -119,7 +111,7 @@ internal static class RulePatches
         }
         catch (Exception ex)
         {
-            LogOnce("power failure", $"scaling a device's power use failed, it uses the game's amount (logged once): {ex}");
+            _hooks?.Fail("scaling a device's power use, it uses the game's amount", ex);
         }
     }
 
@@ -142,7 +134,7 @@ internal static class RulePatches
         }
         catch (Exception ex)
         {
-            LogOnce("cut failure", $"checking the power cut failed, it comes as in the game (logged once): {ex}");
+            _hooks?.Fail("checking the power cut, it comes as in the game", ex);
 
             return true;
         }
@@ -175,7 +167,7 @@ internal static class RulePatches
         }
         catch (Exception ex)
         {
-            LogOnce("panic failure", $"checking Blackout panic failed, it works as in the game (logged once): {ex}");
+            _hooks?.Fail("checking Blackout panic, it works as in the game", ex);
 
             return true;
         }
@@ -190,7 +182,7 @@ internal static class RulePatches
         }
         catch (Exception ex)
         {
-            LogOnce("battery failure", $"writing the battery table before the game counted it failed, it is written within seconds (logged once): {ex}");
+            _hooks?.Fail("writing the battery table before the game counted it, it is written within seconds", ex);
         }
     }
 
@@ -203,7 +195,7 @@ internal static class RulePatches
         }
         catch (Exception ex)
         {
-            LogOnce("burn failure", $"changing the fuel burn failed, it burns at the game's pace (logged once): {ex}");
+            _hooks?.Fail("changing the fuel burn, it burns at the game's pace", ex);
         }
     }
 
@@ -216,7 +208,7 @@ internal static class RulePatches
         }
         catch (Exception ex)
         {
-            LogOnce("time left failure", $"changing a generator's time left failed, it shows the game's (logged once): {ex}");
+            _hooks?.Fail("changing a generator's time left, it shows the game's", ex);
         }
     }
 
