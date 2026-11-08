@@ -260,9 +260,19 @@ public sealed class Plugin : BasePlugin
     {
         if (!IL2CPPChainloader.Instance.Plugins.ContainsKey(WindLink.Guid)) return;
 
-        if (!WindLink.Add(AppDomain.CurrentDomain.GetAssemblies(), "Power Manager", () => _windMultiplier))
+        // A failure here costs only the Wind setting, never the rest of the mod.
+        try
         {
-            log("Wind Power is older than 0.9.3, so there is no Wind setting until it is updated");
+            if (!WindLink.Add(AppDomain.CurrentDomain.GetAssemblies(), "Power Manager", () => _windMultiplier))
+            {
+                log("Wind Power is older than 0.9.3, so there is no Wind setting until it is updated");
+
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            log("could not reach Wind Power, so there is no Wind setting: " + ex.Message);
 
             return;
         }
