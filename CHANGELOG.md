@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.0
+
+- With [Wind Power](https://www.nexusmods.com/survivallog/mods/136) 0.9.3 or newer installed, a new `WindMultiplier` setting makes its wind turbines make more or less power, the way `SolarMultiplier` does for solar panels. It takes effect at once, and each world can keep its own. Without Wind Power the setting does not show.
+- Made for Survival Log 1.1.20719.
+
 ## 0.3.1
 
 - Now uses Exiled's Toolkit for its shared parts, so it needs Exiled's Toolkit 0.19.0 or newer.

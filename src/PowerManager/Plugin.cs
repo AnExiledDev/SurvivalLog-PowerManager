@@ -18,10 +18,15 @@ namespace PowerManagerMod;
 // Loaded after these when they are installed, so their versions can be read (see OldMods).
 [BepInDependency(OldMods.GameRulesGuid, BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency(OldMods.MachineSpeedGuid, BepInDependency.DependencyFlags.SoftDependency)]
+// Loaded after Wind Power when it is installed, so its turbine multipliers can be found (see WindLink).
+[BepInDependency(WindLink.Guid, BepInDependency.DependencyFlags.SoftDependency)]
 public sealed class Plugin : BasePlugin
 {
     private const string Guid = "com.dev.survivallog.powermanager";
-    private const string Version = "0.3.1";
+    private const string Version = "0.4.0";
+
+    /// <summary>The Wind setting, as the turbine multiplier Wind Power reads once a second.</summary>
+    private static volatile float _windMultiplier = 1f;
 
     /// <summary>Exiled's Toolkit: its shared helpers, toasts, live settings, UI size and typing check all come from it.</summary>
     private const string ToolkitGuid = "com.dev.survivallog.exiledtoolkit";
@@ -110,6 +115,8 @@ public sealed class Plugin : BasePlugin
             LiveSettings.Watch(fuelBurn, value => RulePatches.UseBurn(hooks, Speed.From(value), log.Write));
             LiveSettings.Watch(efficiency, value => tables.UseEfficiency(Multiplier.From(value, 0.1f, 100f)));
         }
+
+        BindWind(log.Write);
 
         PowerTicker.Tables = tables;
         PowerTicker.Session = session;
@@ -243,6 +250,30 @@ public sealed class Plugin : BasePlugin
                     "In storms and heavy rain the game's solar panels make nothing. This gives them a share of a cloudy day's power instead: 0.5 is half, 1 is a full cloudy day. 0 is the game's own.\n" +
                     "在暴雨等恶劣天气中，游戏原本的太阳能板不发电。此项让它们发出阴天发电量的一部分：0.5 为一半，1 为与阴天相同。0 为游戏原本的数值。",
                     new AcceptableValueRange<float>(0f, 1f), WorldRule)));
+    }
+
+    /// <summary>
+    /// The Wind setting, only with Wind Power 0.9.3 or newer installed: it multiplies every turbine's power, like
+    /// SolarMultiplier does for the solar panels.
+    /// </summary>
+    private void BindWind(Action<string> log)
+    {
+        if (!IL2CPPChainloader.Instance.Plugins.ContainsKey(WindLink.Guid)) return;
+
+        if (!WindLink.Add(AppDomain.CurrentDomain.GetAssemblies(), "Power Manager", () => _windMultiplier))
+        {
+            log("Wind Power is older than 0.9.3, so there is no Wind setting until it is updated");
+
+            return;
+        }
+
+        var wind = Config.Bind("Wind", "WindMultiplier", 1f, new ConfigDescription(
+            "Wind Power's turbines make this many times their own power. 1 leaves them as they are. Shown only with Wind Power installed.\n" +
+            "Wind Power 的风力发电机的发电量为原本的这么多倍。1 为原本的数值。只在安装了 Wind Power 时显示。",
+            new AcceptableValueRange<float>(WindLink.Least, WindLink.Most), WorldRule));
+
+        LiveSettings.Watch(wind, value => _windMultiplier = WindLink.Multiplier(value));
+        log($"Wind Power found, turbines make {_windMultiplier:0.##}x their power");
     }
 
     private static ConfigDescription Rule(string description) => new(description, null, WorldRule);

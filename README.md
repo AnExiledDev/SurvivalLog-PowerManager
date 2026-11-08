@@ -18,6 +18,7 @@ Running your home's power means walking to each generator to start it, stop it a
 - **Load shedding**: mark devices as **Low priority**. During a power cut, when the battery falls below 20% (you can change it), those devices switch off, and they switch back on once the battery is 10 points above that. Only devices the mod switched off are switched back on.
 - **Settings tab**: auto-refuel, its minutes and the load shedding level can be changed in the panel and are saved to the config at once. The panel key shows there but is changed in the config.
 - **Power and solar settings**: battery size, how much power devices use, when the city power is cut or that it never is, Blackout panic, solar panel output and output in bad weather, generator power and fuel burn are all settings of this mod (see [CONFIG.md](CONFIG.md)). These used to be in Game Rules and Machine Speed; values you set there are carried over the first time the game starts with Power Manager.
+- **Wind turbines**: with [Wind Power](https://www.nexusmods.com/survivallog/mods/136) 0.9.3 or newer installed, the `WindMultiplier` setting makes its turbines make more or less power, like the solar setting does for panels. Without Wind Power it does not show.
 - **Clear messages**: after each press a line says what happened. When the panel is closed, messages such as auto-refuel and load shedding show as pop-ups.
 - **Game hotkeys paused**: the game's own hotkeys are off while the panel is open and come back when it closes.
 - **UI size**: Power Manager's own `UiScale` under Interface sets the size of the panel, from 75% to 200%. At 0, the default, it follows Exiled's Toolkit's UI size.
@@ -53,6 +54,7 @@ The mod's panel and messages follow the game's language: English or Simplified C
 - The [BepInEx Pack for Survival Log](https://www.nexusmods.com/survivallog/mods/12), the BepInEx 6 (IL2CPP) build for the game.
 - [Exiled's Toolkit](https://github.com/AnExiledDev/SurvivalLog-ExiledToolkit) 0.19.0 or newer. Power Manager does not load without it. It keeps the panel key quiet while you type, shows messages as pop-ups while the panel is closed, applies settings changed on the Mod Manager's Mods screen without a restart, and lays out the HUD's tool buttons.
 - Optional: [Mod Manager](https://www.nexusmods.com/survivallog/mods/73). With it, you can change every setting in game on its Mods screen and see what each one does, without opening the config file.
+- Optional: [Wind Power](https://www.nexusmods.com/survivallog/mods/136) 0.9.3 or newer. With it, the `WindMultiplier` setting changes how much power its turbines make.
 
 ## Install
 

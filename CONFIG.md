@@ -54,6 +54,14 @@ The default list starts with notes, letters, flyers and other paper with no othe
 | `SolarMultiplier` | `1` | Solar panels make this many times the game's power. 0.1 to 10. |
 | `BadWeatherOutput` | `0` | In storms and heavy rain the game's panels make nothing. This gives them a share of a cloudy day's power: 0.5 is half, 1 is a full cloudy day. 0 to 1. The multiplier applies on top. |
 
+## Wind
+
+Shown only with [Wind Power](https://www.nexusmods.com/survivallog/mods/136) 0.9.3 or newer installed. Each world can keep its own, like the Solar settings.
+
+| Setting | Default | What it does |
+| --- | --- | --- |
+| `WindMultiplier` | `1` | Wind Power's turbines make this many times their own power. 0.1 to 10. The wind reading in the weather box stays the same. |
+
 ## Interface
 
 | Setting | Default | What it does |

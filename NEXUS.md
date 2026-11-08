@@ -17,6 +17,7 @@ Running your home's power means walking to each generator to start it, stop it a
 [*][b]Devices[/b]: every powered device at home with its power use and an On/Off switch.[/*]
 [*][b]Load shedding[/b]: mark devices as low priority. During a power cut they switch off when the battery falls below 20%, and back on once it is 10 points above. The level can be changed.[/*]
 [*][b]Power and solar settings[/b]: battery size, device power use, when the city power is cut or that it never is, Blackout panic, solar output and output in bad weather, generator power and fuel burn. These used to be in Game Rules and Machine Speed; values you set there are carried over the first time the game starts with Power Manager. With Exiled's Toolkit 0.17.0 or newer, each world can keep its own power settings: pick them for a new world in Customizable Difficulty, or, while you play, change them for that world alone on the Mods screen.[/*]
+[*][b]Wind turbines[/b]: with [url=https://www.nexusmods.com/survivallog/mods/136]Wind Power[/url] 0.9.3 or newer installed, the WindMultiplier setting makes its turbines make more or less power, like the solar setting does for panels. Without Wind Power it does not show.[/*]
 [*][b]HUD button[/b]: a lightning bolt at the top of the bottom-left tool column opens the panel.[/*]
 [*][b]Messages[/b]: a line after each press says what happened. With the panel closed, auto-refuel and load shedding messages show as pop-ups.[/*]
 [*][b]UI size[/b]: the mod's own UiScale setting sizes the panel, or it follows Exiled's Toolkit's UI size.[/*]
@@ -51,6 +52,7 @@ Works in English and Chinese.
 [*][url=https://www.nexusmods.com/survivallog/mods/12]BepInEx for Survival Log[/url]. Install it first.[/*]
 [*][url=https://www.nexusmods.com/survivallog/mods/61]Exiled's Toolkit[/url] 0.19.0 or newer. Power Manager does not load without it. It keeps the panel key quiet while you type, shows messages as pop-ups while the panel is closed and applies settings changed on the Mod Manager's Mods screen without a restart.[/*]
 [*]Optional: [url=https://www.nexusmods.com/survivallog/mods/73]Mod Manager[/url]. With it, you can change every setting in game on its Mods screen and see what each one does, without opening the config file.[/*]
+[*]Optional: [url=https://www.nexusmods.com/survivallog/mods/136]Wind Power[/url] 0.9.3 or newer. With it, the WindMultiplier setting changes how much power its turbines make.[/*]
 [/list]
 
 [size=5]Installation[/size]
@@ -92,6 +94,7 @@ Open source under MIT: [url=https://github.com/AnExiledDev/SurvivalLog-PowerMana
 [*][b]用电设备[/b]：列出家里每个用电设备的耗电量和开关。[/*]
 [*][b]负载削减[/b]：把设备标为低优先级。停电期间电量低于 20% 时它们会关闭，回升 10 个百分点后重新开启。这个电量可以修改。[/*]
 [*][b]电力和太阳能设置[/b]：蓄电池容量、设备耗电、市电何时切断或永不切断、「停电恐慌」、太阳能板发电量和恶劣天气下的发电量、发电机发电量和燃料消耗速度。这些设置原本在 Game Rules 和 Machine Speed 中；你在那里设置的数值会在首次带着 Power Manager 启动游戏时自动沿用。装了 Exiled's Toolkit 0.17.0 或更新版本时，每个存档都可以有自己的电力设置：新存档可以在「自定义难度」里选，游戏中也可以在「模组」界面只为当前存档修改。[/*]
+[*][b]风力发电机[/b]：装了 [url=https://www.nexusmods.com/survivallog/mods/136]Wind Power[/url] 0.9.3 或更新版本时，WindMultiplier 设置能让它的风力发电机多发电或少发电，就像太阳能设置对太阳能板一样。没装 Wind Power 时不显示这项设置。[/*]
 [*][b]HUD 按钮[/b]：左下角工具栏最上方的闪电按钮可以打开面板。[/*]
 [*][b]提示信息[/b]：每次按下按钮后会有一行说明结果。面板关闭时，自动加燃料和负载削减的提示会以弹出通知显示。[/*]
 [*][b]界面大小[/b]：本模组自己的 UiScale 设置可以调整面板大小，也可以跟随 Exiled's Toolkit 的界面大小。[/*]
@@ -125,6 +128,7 @@ Open source under MIT: [url=https://github.com/AnExiledDev/SurvivalLog-PowerMana
 [*][url=https://www.nexusmods.com/survivallog/mods/12]BepInEx for Survival Log[/url]，请先安装。[/*]
 [*][url=https://www.nexusmods.com/survivallog/mods/61]Exiled's Toolkit[/url] 0.19.0 或更新版本。没有它本模组不会加载。打字时它让面板按键不起作用；面板关闭时，它把提示显示为弹出通知；它还让在 Mod Manager 的「模组」界面改动的设置无需重启即可生效。[/*]
 [*]可选：[url=https://www.nexusmods.com/survivallog/mods/73]Mod Manager[/url]。装了它，可以在游戏里它的「模组」界面修改每项设置，并看到每项的说明，不用打开配置文件。[/*]
+[*]可选：[url=https://www.nexusmods.com/survivallog/mods/136]Wind Power[/url] 0.9.3 或更新版本。装了它，WindMultiplier 设置可以改变它的风力发电机的发电量。[/*]
 [/list]
 
 [size=5]安装[/size]
