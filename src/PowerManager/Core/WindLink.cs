@@ -25,7 +25,7 @@ public static class WindLink
     /// <summary>Hands the calm share to Wind Power. False when no loaded assembly has Wind Power's AddCalm (older than 0.9.4).</summary>
     public static bool AddCalm(IEnumerable<Assembly> assemblies, string source, Func<float> share) => Call(assemblies, "AddCalm", source, share);
 
-    /// <summary>The CalmOutput setting as a share of a Clear day's wind: kept between 0 and 1, and still air (0) if it is not a number.</summary>
+    /// <summary>The SmogOutput setting as a share of a Clear day's wind: kept between 0 and 1, and still air (0) if it is not a number.</summary>
     public static float CalmShare(float setting) => float.IsNaN(setting) ? 0f : Math.Clamp(setting, 0f, 1f);
 
     private static bool Call(IEnumerable<Assembly> assemblies, string name, string source, Func<float> value)

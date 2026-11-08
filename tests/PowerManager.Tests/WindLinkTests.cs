@@ -54,7 +54,7 @@ namespace PowerManager.Tests
             Assert.Equal(multiplier, WindLink.Multiplier(setting));
         }
 
-        // CalmOutput goes to Wind Power's calm list, not its multipliers, or it would scale the turbines in every weather.
+        // SmogOutput goes to Wind Power's calm list, not its multipliers, or it would scale the turbines in every weather.
         [Fact]
         public void TheCalmSettingReachesWindPowersCalmAirNotItsMultipliers()
         {
