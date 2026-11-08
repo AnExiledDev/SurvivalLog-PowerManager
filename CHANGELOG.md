@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.0
+
+- With [Wind Power](https://www.nexusmods.com/survivallog/mods/136) 0.9.4 or newer installed, a new `CalmOutput` setting gives Heavy Smog some wind, so the turbines turn and make power there, the way `BadWeatherOutput` does for solar panels in storms. It is a share of a Clear day's wind, takes effect at once, and each world can keep its own. It starts at 0, so nothing changes until you set it.
+- Made for Survival Log 1.1.20719.
+
 ## 0.4.0
 
 - With [Wind Power](https://www.nexusmods.com/survivallog/mods/136) 0.9.3 or newer installed, a new `WindMultiplier` setting makes its wind turbines make more or less power, the way `SolarMultiplier` does for solar panels. It takes effect at once, and each world can keep its own. Without Wind Power the setting does not show.

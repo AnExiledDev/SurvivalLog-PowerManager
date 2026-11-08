@@ -23,10 +23,13 @@ namespace PowerManagerMod;
 public sealed class Plugin : BasePlugin
 {
     private const string Guid = "com.dev.survivallog.powermanager";
-    private const string Version = "0.4.0";
+    private const string Version = "0.5.0";
 
     /// <summary>The Wind setting, as the turbine multiplier Wind Power reads once a second.</summary>
     private static volatile float _windMultiplier = 1f;
+
+    /// <summary>The CalmOutput setting, as the share of a Clear day's wind Wind Power gives Heavy Smog.</summary>
+    private static volatile float _calmShare;
 
     /// <summary>Exiled's Toolkit: its shared helpers, toasts, live settings, UI size and typing check all come from it.</summary>
     private const string ToolkitGuid = "com.dev.survivallog.exiledtoolkit";
@@ -253,8 +256,9 @@ public sealed class Plugin : BasePlugin
     }
 
     /// <summary>
-    /// The Wind setting, only with Wind Power 0.9.3 or newer installed: it multiplies every turbine's power, like
-    /// SolarMultiplier does for the solar panels.
+    /// The Wind settings, only with Wind Power installed: WindMultiplier (0.9.3 or newer) multiplies every turbine's
+    /// power, like SolarMultiplier does for the solar panels, and CalmOutput (0.9.4 or newer) gives Heavy Smog some
+    /// wind, like BadWeatherOutput gives the panels some light in storms.
     /// </summary>
     private void BindWind(Action<string> log)
     {
@@ -284,6 +288,30 @@ public sealed class Plugin : BasePlugin
 
         LiveSettings.Watch(wind, value => _windMultiplier = WindLink.Multiplier(value));
         log($"Wind Power found, turbines make {_windMultiplier:0.##}x their power");
+
+        try
+        {
+            if (!WindLink.AddCalm(AppDomain.CurrentDomain.GetAssemblies(), "Power Manager", () => _calmShare))
+            {
+                log("Wind Power is older than 0.9.4, so there is no CalmOutput setting until it is updated");
+
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            log("could not reach Wind Power, so there is no CalmOutput setting: " + ex.Message);
+
+            return;
+        }
+
+        var calm = Config.Bind("Wind", "CalmOutput", 0f, new ConfigDescription(
+            "In Heavy Smog the air is still and Wind Power's turbines make nothing. This gives them a share of a Clear day's wind instead: 0.5 is half, 1 is a full Clear day. 0 leaves them still. Shown only with Wind Power installed.\n" +
+            "「大雾霾天」没有风，Wind Power 的风力发电机不发电。此项让它们获得晴天风力的一部分：0.5 为一半，1 为与晴天相同。0 为不转。只在安装了 Wind Power 时显示。",
+            new AcceptableValueRange<float>(0f, 1f), WorldRule));
+
+        LiveSettings.Watch(calm, value => _calmShare = WindLink.CalmShare(value));
+        log($"calm air gets {_calmShare:0.##} of a Clear day's wind");
     }
 
     private static ConfigDescription Rule(string description) => new(description, null, WorldRule);

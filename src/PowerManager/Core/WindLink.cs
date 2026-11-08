@@ -7,7 +7,8 @@ namespace PowerManagerMod.Core;
 /// <summary>
 /// Wind Power's turbine multipliers, found by name so this mod loads and runs without Wind Power. The method is
 /// WindPower.WindBoosts.Add(string source, Func&lt;float&gt; multiplier), in Wind Power 0.9.3 or newer; every
-/// turbine's rating is multiplied by what the function returns, read once a second.
+/// turbine's rating is multiplied by what the function returns, read once a second. Wind Power 0.9.4 adds
+/// AddCalm(string source, Func&lt;float&gt; share): calm air (Heavy Smog) gets that share of a Clear day's wind.
 /// </summary>
 public static class WindLink
 {
@@ -19,13 +20,21 @@ public static class WindLink
     public const float Most = 10f;
 
     /// <summary>Hands the multiplier to Wind Power. False when no loaded assembly has Wind Power's Add.</summary>
-    public static bool Add(IEnumerable<Assembly> assemblies, string source, Func<float> multiplier)
+    public static bool Add(IEnumerable<Assembly> assemblies, string source, Func<float> multiplier) => Call(assemblies, "Add", source, multiplier);
+
+    /// <summary>Hands the calm share to Wind Power. False when no loaded assembly has Wind Power's AddCalm (older than 0.9.4).</summary>
+    public static bool AddCalm(IEnumerable<Assembly> assemblies, string source, Func<float> share) => Call(assemblies, "AddCalm", source, share);
+
+    /// <summary>The CalmOutput setting as a share of a Clear day's wind: kept between 0 and 1, and still air (0) if it is not a number.</summary>
+    public static float CalmShare(float setting) => float.IsNaN(setting) ? 0f : Math.Clamp(setting, 0f, 1f);
+
+    private static bool Call(IEnumerable<Assembly> assemblies, string name, string source, Func<float> value)
     {
-        var add = Find(assemblies);
+        var method = Find(assemblies, name);
 
-        if (add == null) return false;
+        if (method == null) return false;
 
-        add.Invoke(null, new object[] { source, multiplier });
+        method.Invoke(null, new object[] { source, value });
 
         return true;
     }
@@ -33,7 +42,7 @@ public static class WindLink
     /// <summary>The Wind setting as a turbine multiplier: kept in range, and the game's own (1) if it is not a number.</summary>
     public static float Multiplier(float setting) => float.IsNaN(setting) ? 1f : Math.Clamp(setting, Least, Most);
 
-    private static MethodInfo? Find(IEnumerable<Assembly> assemblies)
+    private static MethodInfo? Find(IEnumerable<Assembly> assemblies, string name)
     {
         foreach (var assembly in assemblies)
         {
@@ -48,7 +57,7 @@ public static class WindLink
                 continue;
             }
 
-            var add = type?.GetMethod("Add", BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(string), typeof(Func<float>) }, null);
+            var add = type?.GetMethod(name, BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(string), typeof(Func<float>) }, null);
 
             if (add != null) return add;
         }

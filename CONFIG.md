@@ -56,11 +56,12 @@ The default list starts with notes, letters, flyers and other paper with no othe
 
 ## Wind
 
-Shown only with [Wind Power](https://www.nexusmods.com/survivallog/mods/136) 0.9.3 or newer installed. Each world can keep its own, like the Solar settings.
+Shown only with [Wind Power](https://www.nexusmods.com/survivallog/mods/136) installed: `WindMultiplier` with 0.9.3 or newer, `CalmOutput` with 0.9.4 or newer. Each world can keep its own, like the Solar settings.
 
 | Setting | Default | What it does |
 | --- | --- | --- |
 | `WindMultiplier` | `1` | Wind Power's turbines make this many times their own power. 0.1 to 10. The wind reading in the weather box stays the same. |
+| `CalmOutput` | `0` | In Heavy Smog the air is still and the turbines make nothing. This gives them a share of a Clear day's wind: 0.5 is half, 1 is a full Clear day. 0 to 1. The multiplier applies on top, and the wind reading shows the wind it gives. |
 
 ## Interface
 
