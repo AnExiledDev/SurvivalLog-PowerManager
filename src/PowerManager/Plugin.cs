@@ -307,7 +307,7 @@ public sealed class Plugin : BasePlugin
 
         var smog = Config.Bind("Wind", "SmogOutput", 0f, new ConfigDescription(
             "In Heavy Smog the air is still and Wind Power's turbines make nothing. This gives them a share of a Clear day's wind instead: 0.5 is half, 1 is a full Clear day. 0 leaves them still. Once Wind Power's own HeavySmog setting is above 0, that wind is used instead. Shown only with Wind Power installed.\n" +
-            "「大雾霾天」没有风，Wind Power 的风力发电机不发电。此项让它们获得晴天风力的一部分：0.5 为一半，1 为与晴天相同。0 为不转。Wind Power 自己的 HeavySmog 设置大于 0 时，改用那个风力。只在安装了 Wind Power 时显示。",
+            "「大雾霾天」没有风，Wind Power 的风力发电机不发电。此项让它们获得「晴天」风力的一部分：0.5 为一半，1 为与「晴天」相同。0 为不转。Wind Power 自己的 HeavySmog 设置大于 0 时，改用那个风力。只在安装了 Wind Power 时显示。",
             new AcceptableValueRange<float>(0f, 1f), WorldRule));
 
         LiveSettings.Watch(smog, value => _smogShare = WindLink.CalmShare(value));

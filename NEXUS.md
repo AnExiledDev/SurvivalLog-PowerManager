@@ -52,7 +52,7 @@ Works in English and Chinese.
 [*][url=https://www.nexusmods.com/survivallog/mods/12]BepInEx for Survival Log[/url]. Install it first.[/*]
 [*][url=https://www.nexusmods.com/survivallog/mods/61]Exiled's Toolkit[/url] 0.19.0 or newer. Power Manager does not load without it. It keeps the panel key quiet while you type, shows messages as pop-ups while the panel is closed and applies settings changed on the Mod Manager's Mods screen without a restart.[/*]
 [*]Optional: [url=https://www.nexusmods.com/survivallog/mods/73]Mod Manager[/url]. With it, you can change every setting in game on its Mods screen and see what each one does, without opening the config file.[/*]
-[*]Optional: [url=https://www.nexusmods.com/survivallog/mods/136]Wind Power[/url] 0.9.3 or newer. With it, the WindMultiplier setting changes how much power its turbines make.[/*]
+[*]Optional: [url=https://www.nexusmods.com/survivallog/mods/136]Wind Power[/url] 0.9.3 or newer. With it, the WindMultiplier setting changes how much power its turbines make, and with 0.9.4 or newer SmogOutput gives Heavy Smog some wind.[/*]
 [/list]
 
 [size=5]Installation[/size]
@@ -128,7 +128,7 @@ Open source under MIT: [url=https://github.com/AnExiledDev/SurvivalLog-PowerMana
 [*][url=https://www.nexusmods.com/survivallog/mods/12]BepInEx for Survival Log[/url]，请先安装。[/*]
 [*][url=https://www.nexusmods.com/survivallog/mods/61]Exiled's Toolkit[/url] 0.19.0 或更新版本。没有它本模组不会加载。打字时它让面板按键不起作用；面板关闭时，它把提示显示为弹出通知；它还让在 Mod Manager 的「模组」界面改动的设置无需重启即可生效。[/*]
 [*]可选：[url=https://www.nexusmods.com/survivallog/mods/73]Mod Manager[/url]。装了它，可以在游戏里它的「模组」界面修改每项设置，并看到每项的说明，不用打开配置文件。[/*]
-[*]可选：[url=https://www.nexusmods.com/survivallog/mods/136]Wind Power[/url] 0.9.3 或更新版本。装了它，WindMultiplier 设置可以改变它的风力发电机的发电量。[/*]
+[*]可选：[url=https://www.nexusmods.com/survivallog/mods/136]Wind Power[/url] 0.9.3 或更新版本。装了它，WindMultiplier 设置可以改变它的风力发电机的发电量；装了 0.9.4 或更新版本时，SmogOutput 设置还能让「大雾霾天」有些风。[/*]
 [/list]
 
 [size=5]安装[/size]
