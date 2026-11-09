@@ -39,7 +39,7 @@ public static class WindLink
         return true;
     }
 
-    /// <summary>The Wind setting as a turbine multiplier: kept in range, and the game's own (1) if it is not a number.</summary>
+    /// <summary>The Wind setting as a turbine multiplier: kept in range, and the game's (1) if it is not a number.</summary>
     public static float Multiplier(float setting) => float.IsNaN(setting) ? 1f : Math.Clamp(setting, Least, Most);
 
     private static MethodInfo? Find(IEnumerable<Assembly> assemblies, string name)

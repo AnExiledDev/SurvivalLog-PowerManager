@@ -224,17 +224,17 @@ public sealed class Plugin : BasePlugin
         return new RuleEntries(
             Config.Bind("Power", "BatteryMultiplier", game.BatteryMultiplier,
                 new ConfigDescription(
-                    "Batteries hold this many times the game's power: 2 holds twice as much. 1 is the game's own. Lowering it drops any stored power above the new size.\n" +
+                    "Batteries hold this many times the game's power: 2 holds twice as much. 1 is the game's. Lowering it drops any stored power above the new size.\n" +
                     "蓄电池的容量为游戏原本的这么多倍：2 为两倍。1 为游戏原本的数值。调低后，超出新容量的储存电量会丢失。",
                     new AcceptableValueRange<float>(0.1f, 10f), WorldRule)),
             Config.Bind("Power", "DevicePowerUse", game.DevicePowerUse,
                 new ConfigDescription(
-                    "How much power switched-on devices use, times the game's use: 0.5 is half. Cooking and shredding jobs, the compressor, defense devices firing and the signal station use the game's amount. 1 is the game's own.\n" +
+                    "How much power switched-on devices use, times the game's use: 0.5 is half. Cooking and shredding jobs, the compressor, defense devices firing and the signal station use the game's amount. 1 is the game's.\n" +
                     "开启的电器消耗的电量，为游戏原本的倍数：0.5 为一半。烹饪和粉碎工作、压缩机、防御设施开火和信号站的耗电与游戏原本相同。1 为游戏原本的数值。",
                     new AcceptableValueRange<float>(0f, 3f), WorldRule)),
             Config.Bind("Power", "PowerCutDelay", game.PowerCutDelay,
                 new ConfigDescription(
-                    "How many days later than in the game the city power is cut. 0 is the game's own. A cut that already happened stays.\n" +
+                    "How many days later than in the game the city power is cut. 0 is the game's. A cut that already happened stays.\n" +
                     "市电被切断（剧情事件「停电开始」）比游戏原本推迟的天数。0 为游戏原本的数值。已经停电的不会恢复。",
                     new AcceptableValueRange<int>(0, 100), WorldRule)),
             Config.Bind("Power", "NoPowerCut", game.NoPowerCut, Rule(
@@ -245,12 +245,12 @@ public sealed class Plugin : BasePlugin
                 "夜间停电不会再带来「停电恐慌」及其心态下降。已有的停电恐慌会在游戏内十分钟内消除。关闭后与游戏原本相同。")),
             Config.Bind("Solar", "SolarMultiplier", game.SolarMultiplier,
                 new ConfigDescription(
-                    "Solar panels make this many times the game's power. 1 is the game's own.\n" +
+                    "Solar panels make this many times the game's power. 1 is the game's.\n" +
                     "太阳能板的发电量为游戏原本的这么多倍。1 为游戏原本的数值。",
                     new AcceptableValueRange<float>(0.1f, 10f), WorldRule)),
             Config.Bind("Solar", "BadWeatherOutput", game.BadWeatherSolar,
                 new ConfigDescription(
-                    "In storms and heavy rain the game's solar panels make nothing. This gives them a share of a cloudy day's power instead: 0.5 is half, 1 is a full cloudy day. 0 is the game's own.\n" +
+                    "In storms and heavy rain the game's solar panels make nothing. This gives them a share of a cloudy day's power instead: 0.5 is half, 1 is a full cloudy day. 0 is the game's.\n" +
                     "在暴雨等恶劣天气中，游戏原本的太阳能板不发电。此项让它们发出阴天发电量的一部分：0.5 为一半，1 为与阴天相同。0 为游戏原本的数值。",
                     new AcceptableValueRange<float>(0f, 1f), WorldRule)));
     }

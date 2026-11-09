@@ -17,7 +17,7 @@ public enum FuelAdd
 }
 
 /// <summary>
-/// The game as the mod sees it. Each call that changes the game is one call of the game's own button handlers, made at
+/// The game as the mod sees it. Each call that changes the game is one call of the game's button handlers, made at
 /// most once per frame. Every call fails soft: a failure reads as nothing read or nothing done.
 /// </summary>
 public interface IPowerGame

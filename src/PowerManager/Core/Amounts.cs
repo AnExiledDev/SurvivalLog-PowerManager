@@ -126,7 +126,7 @@ public static class Scaling
         multiplier.IsGameAmount || !float.IsFinite(gameRate) || gameRate <= 0f ? gameRate : gameRate * multiplier.Value;
 }
 
-/// <summary>A table value this mod wrote over: the game's own value and what was written in its place.</summary>
+/// <summary>A table value this mod wrote over: the game's value and what was written in its place.</summary>
 public readonly record struct TableValue(float Game, float Written)
 {
     /// <summary>

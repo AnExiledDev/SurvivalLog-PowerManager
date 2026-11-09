@@ -10,7 +10,7 @@ Running your home's power means walking to each generator to start it, stop it a
 - **HUD button**: a lightning bolt at the top of the tool column in the bottom-left corner of the screen. It opens and closes the panel. It only shows in a loaded game past the prologue.
 - **Battery and forecast**: the Power tab shows how much the battery holds, what your home makes and uses every 10 minutes, and how long until the battery is empty or full at that rate. While the city power is on it says the battery is not in use.
 - **Generators**: every fuel generator at home, whether it is running, how much fuel time it has left and how many fuel slots are filled. **Start**, **Stop** and **Refuel** for each one, and **Start all**, **Stop all** and **Refuel all** for every one.
-- **Auto-start**: turn on the game's own auto-start for a generator and pick the battery level it starts below, or set it for every generator at once. It is the same setting as the generator's own menu.
+- **Auto-start**: turn on the game's auto-start for a generator and pick the battery level it starts below, or set it for every generator at once. It is the same setting as the generator's own menu.
 - **Refuel from home storage**: Refuel takes fuel from your home's storage and fills the generator, in your fuel order. The neighbor's basket and stoves are left alone.
 - **Fuel order**: the Fuel tab lists the items used as fuel, top first, with how many of each are in storage. Each item shows its burn value. Move them up and down, remove them, or add any other item that burns, whether you have it or not. The add list leaves out what is already on the fuel list, and an item you remove shows up there right away. Items left off the list are never burned, so food and tools stay where they are. The default list burns notes, letters, flyers and other junk paper first, then Poor-Quality, Common and High-Proof Alcohol, then Diesel last.
 - **Auto-refuel**: turn it on in the Settings tab and a running generator, or one set to auto-start, is topped up from storage when it has less than 60 in-game minutes of fuel left (you can change the minutes). When your storage has nothing from the fuel list, a message says so once.
@@ -20,11 +20,11 @@ Running your home's power means walking to each generator to start it, stop it a
 - **Power and solar settings**: battery size, how much power devices use, when the city power is cut or that it never is, Blackout panic, solar panel output and output in bad weather, generator power and fuel burn are all settings of this mod (see [CONFIG.md](CONFIG.md)). These used to be in Game Rules and Machine Speed; values you set there are carried over the first time the game starts with Power Manager.
 - **Wind turbines**: with [Wind Power](https://www.nexusmods.com/survivallog/mods/136) 0.9.3 or newer installed, the `WindMultiplier` setting makes its turbines make more or less power, like the solar setting does for panels. With Wind Power 0.9.4 or newer, `SmogOutput` gives Heavy Smog some wind, so the turbines make power there too. Without Wind Power these settings do not show.
 - **Clear messages**: after each press a line says what happened. When the panel is closed, messages such as auto-refuel and load shedding show as pop-ups.
-- **Game hotkeys paused**: the game's own hotkeys are off while the panel is open and come back when it closes.
+- **Game hotkeys paused**: the game's hotkeys are off while the panel is open and come back when it closes.
 - **UI size**: Power Manager's own `UiScale` under Interface sets the size of the panel, from 75% to 200%. At 0, the default, it follows Exiled's Toolkit's UI size.
 - **Log file**: every press and what came of it is written to `BepInEx\power-manager.log`.
 
-Every action is the game's own: the same start, stop, auto-start, refuel and switch the game's menus use. Refuelling uses the items up, as if you had put them in by hand.
+Every action is the game's: the same start, stop, auto-start, refuel and switch the game's menus use. Refuelling uses the items up, as if you had put them in by hand.
 
 Power Manager writes nothing into your save file. Which devices are low priority is kept for each save in `BepInEx\config\com.dev.survivallog.powermanager.devices.txt`. You can remove the mod at any time; generators and devices stay as they are.
 
@@ -40,7 +40,7 @@ The mod's panel and messages follow the game's language: English or Simplified C
 
 ## Known issues and limits
 
-- Stopping a generator also turns its auto-start off. This is the game's own rule; turn auto-start back on in the panel.
+- Stopping a generator also turns its auto-start off. This is the game's rule; turn auto-start back on in the panel.
 - While the game holds its power switches (during some story events), nothing can be switched and the panel says so.
 - Devices that Defense Manager powers are shown but cannot be switched or marked low priority here.
 - A low-priority device you switch back on while the battery is still low is switched off again. Mark it normal priority to keep it on.
@@ -70,7 +70,7 @@ If you use Game Rules or Machine Speed, update them to 0.7.0 or newer too: their
 
 Delete `PowerManager.dll` from the `BepInEx\plugins` folder. For a clean slate, also delete `BepInEx\config\com.dev.survivallog.powermanager.cfg`, `BepInEx\config\com.dev.survivallog.powermanager.devices.txt` and `BepInEx\power-manager.log`.
 
-Devices the mod switched off to save the battery stay off; switch them on from the game's own power panel.
+Devices the mod switched off to save the battery stay off; switch them on from the game's power panel.
 
 ## Configuration
 

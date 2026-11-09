@@ -10,7 +10,7 @@ namespace PowerManagerMod.Adapters;
 /// <summary>
 /// The Harmony hooks for the power rules: device power use, the city power cut, Blackout panic, how fast generators
 /// burn fuel, and the battery table written just before the game counts it. Each hook goes in the first time its setting leaves the game's rule and stays in; back at the
-/// game's rule, it lets the game's own answer through. Every target was checked in GameAssembly.dll: no relative jump
+/// game's rule, it lets the game's answer through. Every target was checked in GameAssembly.dll: no relative jump
 /// or call in its first 14 bytes. Every dynamic event is built by DynamicEventManager.CreateDynamicEventArgs, whose
 /// callers all handle it returning nothing, so a held-back power cut is simply not built and is offered again at the
 /// next check. Static because Harmony patches are.
@@ -102,7 +102,7 @@ internal static class RulePatches
         hooks.Patch(typeof(RulePatches), type, target, parameters, prefix, postfix, consequence: "it keeps the game's rules");
     }
 
-    /// <summary>Runs inside the game's own call; an escaping exception would reach native code.</summary>
+    /// <summary>Runs inside the game's call; an escaping exception would reach native code.</summary>
     private static void ScalePowerCost(ref float __result)
     {
         try
@@ -115,7 +115,7 @@ internal static class RulePatches
         }
     }
 
-    /// <summary>Runs inside the game's own call for every event; a failure lets the event through.</summary>
+    /// <summary>Runs inside the game's call for every event; a failure lets the event through.</summary>
     private static bool HoldPowerCut(DynamicEventConfig config, ref DynamicEventArgs? __result)
     {
         try
@@ -173,7 +173,7 @@ internal static class RulePatches
         }
     }
 
-    /// <summary>Runs inside the game's own call; a failure leaves the table as it is until the next check.</summary>
+    /// <summary>Runs inside the game's call; a failure leaves the table as it is until the next check.</summary>
     private static void SyncBattery()
     {
         try

@@ -48,7 +48,7 @@ internal static unsafe class SolarDetour
 
     /// <summary>
     /// Called on the main thread at start and after each change. The detour is placed the first time the panels change and
-    /// stays; back at the game's numbers, it hands the game's own output through.
+    /// stays; back at the game's numbers, it hands the game's output through.
     /// </summary>
     public static void Use(PowerRules settings, Action<string> log)
     {
@@ -143,7 +143,7 @@ internal static unsafe class SolarDetour
         return Marshal.GetDelegateForFunctionPointer<DobbyHook>(NativeLibrary.GetExport(library, "DobbyHook"));
     }
 
-    /// <summary>Runs inside the game's own call; nothing may escape into native code, and the result pointer always returns.</summary>
+    /// <summary>Runs inside the game's call; nothing may escape into native code, and the result pointer always returns.</summary>
     private static IntPtr OnCalcSolarOutput(IntPtr result, IntPtr furniture, IntPtr elecConfig, IntPtr method)
     {
         var returned = _original!(result, furniture, elecConfig, method);

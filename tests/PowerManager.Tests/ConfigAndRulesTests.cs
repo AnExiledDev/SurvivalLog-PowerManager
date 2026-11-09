@@ -96,7 +96,7 @@ public class ConfigAndRulesTests
     }
 
     // The setting now changes while the game runs and from one world to the next, so each change must start again
-    // from the game's own capacity: a battery at 2x raised to 3x holds 3x, not 6x.
+    // from the game's capacity: a battery at 2x raised to 3x holds 3x, not 6x.
     [Fact]
     public void A_changed_battery_setting_never_compounds()
     {

@@ -1,7 +1,7 @@
 // Power Manager's web half. Runs in Root.html, the document every game page iframe sits in. Draws the panel over all
 // of them in the warm gold look of the other mod panels: the battery, the generators and the powered devices, a tab for
 // the fuel order, and one for settings. It also puts a button in the HUD's tool column (bottom left, above the phone
-// and bag buttons) through Exiled's Toolkit, built like the game's own buttons there so it reads as part of the game.
+// and bag buttons) through Exiled's Toolkit, built like the game's buttons there so it reads as part of the game.
 // Talks to the plugin through the Toolkit's send ("slmod|powermanager|<verb>") and is driven by window.__slpower.
 (function () {
   if (window.__slpower) return;
@@ -582,7 +582,7 @@
   }
 
   // Shown only in a game, with the panel key and the tip in the game's language. The Toolkit puts the button first in
-  // the tool column, where the game's own buttons do not move, and puts it back whenever the HUD page is rebuilt.
+  // the tool column, where the game's buttons do not move, and puts it back whenever the HUD page is rebuilt.
   function showHudState() {
     if (!hudButton) return;
 

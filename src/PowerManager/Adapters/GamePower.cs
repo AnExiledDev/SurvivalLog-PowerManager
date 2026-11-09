@@ -10,7 +10,7 @@ namespace PowerManagerMod.Adapters;
 
 /// <summary>
 /// The game's side of the panel. Reads go through the game's power manager and the home's electrical furniture (the
-/// same list the game's own power panel shows); every change is one of the game's own button handlers. Each call fails
+/// same list the game's power panel shows); every change is one of the game's button handlers. Each call fails
 /// soft: an exception is logged once per kind of call and answered as nothing read or nothing done, and one device that
 /// cannot be read is left out while the rest are not.
 /// </summary>
@@ -356,7 +356,7 @@ internal sealed class GamePower : IPowerGame
     }
 
     /// <summary>
-    /// Burnable and not a task item: the game's own test in the generator's fuel handler, so nothing offered here is
+    /// Burnable and not a task item: the game's test in the generator's fuel handler, so nothing offered here is
     /// refused there.
     /// </summary>
     private static bool IsFuel(Il2CppSystem.Collections.Generic.Dictionary<int, Config_Item> rows, int configId) =>

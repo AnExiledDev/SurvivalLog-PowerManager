@@ -10,7 +10,7 @@ Running your home's power means walking to each generator to start it, stop it a
 [list]
 [*][b]Battery forecast[/b]: how much the battery holds, what your home makes and uses, and how long until it is empty or full.[/*]
 [*][b]Generators[/b]: every fuel generator with its fuel time left. [b]Start[/b], [b]Stop[/b] and [b]Refuel[/b] each one, or [b]Start all[/b], [b]Stop all[/b] and [b]Refuel all[/b].[/*]
-[*][b]Auto-start[/b]: turn on the game's own auto-start for a generator and pick the battery level it starts below, for one generator or all of them.[/*]
+[*][b]Auto-start[/b]: turn on the game's auto-start for a generator and pick the battery level it starts below, for one generator or all of them.[/*]
 [*][b]Refuel from home storage[/b]: fuel comes out of your home's storage, in your fuel order. No walking.[/*]
 [*][b]Fuel order[/b]: the Fuel tab lists the items burned as fuel, top first, with how many you have. Each item shows its burn value. Move them up and down, remove them, or add any other item that burns, whether you have it or not; an item you remove can be added back right away. Items left off the list are never burned. The default burns notes, letters, flyers and other junk paper first, then Poor-Quality, Common and High-Proof Alcohol, then Diesel last.[/*]
 [*][b]Auto-refuel[/b]: an option, off by default, that tops up a running generator, or one set to auto-start, when it has less than 60 in-game minutes of fuel left. The minutes can be changed.[/*]
@@ -27,15 +27,15 @@ Running your home's power means walking to each generator to start it, stop it a
 [list]
 [*][b]Esc[/b]: close the panel.[/*]
 [/list]
-The panel key is unbound by default: the HUD button opens the panel. Set PanelKey in the config to open it from the keyboard too; it does nothing while you type in a text box. The game's own hotkeys are off while the panel is open.
+The panel key is unbound by default: the HUD button opens the panel. Set PanelKey in the config to open it from the keyboard too; it does nothing while you type in a text box. The game's hotkeys are off while the panel is open.
 
-Every action is the game's own: the same start, stop, auto-start, refuel and switch the game's menus use, and refuelling uses the items up. The mod writes nothing into your save file. You can remove it at any time; generators and devices stay as they are.
+Every action is the game's: the same start, stop, auto-start, refuel and switch the game's menus use, and refuelling uses the items up. The mod writes nothing into your save file. You can remove it at any time; generators and devices stay as they are.
 
 Works in English and Chinese.
 
 [size=5]Known issues[/size]
 [list]
-[*]Stopping a generator also turns its auto-start off. This is the game's own rule; turn auto-start back on in the panel.[/*]
+[*]Stopping a generator also turns its auto-start off. This is the game's rule; turn auto-start back on in the panel.[/*]
 [*]While the game holds its power switches during some story events, nothing can be switched.[/*]
 [*]Devices that Defense Manager powers are shown but cannot be switched or marked low priority here.[/*]
 [*]A low-priority device you switch back on while the battery is still low is switched off again. Mark it normal priority to keep it on.[/*]
@@ -66,7 +66,7 @@ Works in English and Chinese.
 If you use Game Rules or Machine Speed, update them to 0.7.0 or newer too: their power settings have moved here. Until you do, Power Manager leaves those settings to the old version and a message asks you to update it.
 
 [size=5]Uninstall[/size]
-Delete [font=Courier New]PowerManager.dll[/font] from the [font=Courier New]BepInEx\plugins[/font] folder. Devices the mod switched off to save the battery stay off; switch them on from the game's own power panel.
+Delete [font=Courier New]PowerManager.dll[/font] from the [font=Courier New]BepInEx\plugins[/font] folder. Devices the mod switched off to save the battery stay off; switch them on from the game's power panel.
 
 [size=5]Configuration[/size]
 Auto-refuel, its minutes, the load shedding level and the fuel order can be changed in the panel. Everything else, such as the key and the power and solar settings, can be changed in game on the Mod Manager's Mods screen, where changes take effect at once, or in [font=Courier New]BepInEx\config\com.dev.survivallog.powermanager.cfg[/font] while the game is closed (see [url=https://github.com/AnExiledDev/SurvivalLog-PowerManager/blob/main/CONFIG.md]CONFIG.md[/url]; the cfg file explains each setting in English and Chinese).

@@ -66,7 +66,7 @@ public static class BatteryCapacity
 
     /// <summary>
     /// The capacity to write over a row of the game's electrical table, or null for a row that is not a battery (every
-    /// other device keeps its own number). The multiplier applies to the game's own capacity, never to one written
+    /// other device keeps its own number). The multiplier applies to the game's capacity, never to one written
     /// before, so changing the setting while the game runs never compounds.
     /// </summary>
     public static TableValue? Next(int electricalType, float current, TableValue? last, Multiplier multiplier) =>

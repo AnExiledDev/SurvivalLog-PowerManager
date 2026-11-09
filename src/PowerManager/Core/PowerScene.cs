@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace PowerManagerMod.Core;
 
 /// <summary>
-/// The home's power as one read of the game sees it. Stored, capacity, generation and consumption are the game's own
+/// The home's power as one read of the game sees it. Stored, capacity, generation and consumption are the game's
 /// numbers, in its power units per 10-minute tick. IsOutage is the city power being cut, the only time the battery and
 /// generators matter. IsLocked is the game holding every switch (story scenes), when nothing may be pressed.
 /// </summary>
