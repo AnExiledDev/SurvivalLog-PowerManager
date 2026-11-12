@@ -60,7 +60,7 @@ public class PowerRunTests
         game.Battery = game.Battery with { IsLocked = true };
         run.Start(1);
 
-        Assert.Equal(new[] { "The game is holding the power switches right now." }, game.RunAll(run));
+        Assert.Equal(new[] { "The game has locked the power switches for now." }, game.RunAll(run));
         Assert.Empty(game.Calls);
     }
 
@@ -104,7 +104,7 @@ public class PowerRunTests
         game.Storage.Add(new FuelStack(500, 42001, 1));
         run.Refuel(1);
 
-        Assert.Equal(new[] { "Added 1 fuel to Gen 1, then ran out of fuel from your list." }, game.RunAll(run));
+        Assert.Equal(new[] { "Added 1 fuel to Gen 1, then home storage ran out of fuel from your list." }, game.RunAll(run));
     }
 
     [Fact]
@@ -135,7 +135,7 @@ public class PowerRunTests
         var (game, run) = Home(Gen(1, isOn: true, seconds: 60f));
 
         run.AutoPass(game.Read(), 0, 60, now: 0f, isChinese: false);
-        Assert.Equal(new[] { "Auto-refuel: Gen 1 is low, and there is no fuel from your fuel list in home storage." }, game.RunAll(run, now: 0f));
+        Assert.Equal(new[] { "Auto-refuel: Gen 1 is low on fuel, and home storage has nothing from your fuel list." }, game.RunAll(run, now: 0f));
 
         run.AutoPass(game.Read(), 0, 60, now: 10f, isChinese: false);
         Assert.False(run.HasWork);
@@ -195,7 +195,7 @@ public class PowerRunTests
         game.Stuck.Add(10);
         run.Switch(10, false);
 
-        Assert.Equal(new[] { "The game kept Lamp as it was." }, game.RunAll(run));
+        Assert.Equal(new[] { "The game would not switch Lamp." }, game.RunAll(run));
     }
 
     [Fact]
@@ -205,7 +205,7 @@ public class PowerRunTests
 
         game.Devices.Add(new Device(10, LampKey, "Turret", true, 5f, IsManaged: true));
 
-        Assert.Equal("Defense Manager runs the power of Turret.", run.MarkLow(game.Read(), 10, true, false).Text);
+        Assert.Equal("Defense Manager controls the power to Turret.", run.MarkLow(game.Read(), 10, true, false).Text);
         run.Switch(10, false);
         game.RunAll(run);
 

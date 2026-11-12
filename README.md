@@ -6,27 +6,27 @@ Running your home's power means walking to each generator to start it, stop it a
 
 ## Features
 
-- **Panel key**: unbound by default. Set `PanelKey` in the config to open and close the panel from the keyboard in a loaded game, past the prologue. `Esc` or the close button closes it. The key does nothing while you type in a text box.
+- **Panel key**: unbound by default. Set `PanelKey` in the config to open and close the panel from the keyboard once you are in a loaded game past the prologue. `Esc` or the close button closes it. The key does nothing while you type in a text box.
 - **HUD button**: a lightning bolt at the top of the tool column in the bottom-left corner of the screen. It opens and closes the panel. It only shows in a loaded game past the prologue.
 - **Battery and forecast**: the Power tab shows how much the battery holds, what your home makes and uses every 10 minutes, and how long until the battery is empty or full at that rate. While the city power is on it says the battery is not in use.
 - **Generators**: every fuel generator at home, whether it is running, how much fuel time it has left and how many fuel slots are filled. **Start**, **Stop** and **Refuel** for each one, and **Start all**, **Stop all** and **Refuel all** for every one.
-- **Auto-start**: turn on the game's auto-start for a generator and pick the battery level it starts below, or set it for every generator at once. It is the same setting as the generator's own menu.
+- **Auto-start**: turn on the game's auto-start for a generator and pick the battery level it starts below, or set it for every generator at once. It is the same auto-start setting you find in the generator's menu.
 - **Refuel from home storage**: Refuel takes fuel from your home's storage and fills the generator, in your fuel order. The neighbor's basket and stoves are left alone.
 - **Fuel order**: the Fuel tab lists the items used as fuel, top first, with how many of each are in storage. Each item shows its burn value. Move them up and down, remove them, or add any other item that burns, whether you have it or not. The add list leaves out what is already on the fuel list, and an item you remove shows up there right away. Items left off the list are never burned, so food and tools stay where they are. The default list burns notes, letters, flyers and other junk paper first, then Poor-Quality, Common and High-Proof Alcohol, then Diesel last.
 - **Auto-refuel**: turn it on in the Settings tab and a running generator, or one set to auto-start, is topped up from storage when it has less than 60 in-game minutes of fuel left (you can change the minutes). When your storage has nothing from the fuel list, a message says so once.
 - **Devices**: every powered device at home, with how much power it uses and an **On**/**Off** switch.
 - **Load shedding**: mark devices as **Low priority**. During a power cut, when the battery falls below 20% (you can change it), those devices switch off, and they switch back on once the battery is 10 points above that. Only devices the mod switched off are switched back on.
 - **Settings tab**: auto-refuel, its minutes and the load shedding level can be changed in the panel and are saved to the config at once. The panel key shows there but is changed in the config.
-- **Power and solar settings**: battery size, how much power devices use, when the city power is cut or that it never is, Blackout panic, solar panel output and output in bad weather, generator power and fuel burn are all settings of this mod (see [CONFIG.md](CONFIG.md)). These used to be in Game Rules and Machine Speed; values you set there are carried over the first time the game starts with Power Manager.
-- **Wind turbines**: with [Wind Power](https://www.nexusmods.com/survivallog/mods/136) 0.9.3 or newer installed, the `WindMultiplier` setting makes its turbines make more or less power, like the solar setting does for panels. With Wind Power 0.9.4 or newer, `SmogOutput` gives Heavy Smog some wind, so the turbines make power there too. Without Wind Power these settings do not show.
+- **Power and solar settings**: battery size, how much power devices use, when the city power is cut (or whether it is cut at all), Blackout panic, solar panel output and output in bad weather, generator power and fuel burn are all settings of this mod (see [CONFIG.md](CONFIG.md)). These used to be in Game Rules and Machine Speed. Values you set there are carried over the first time the game starts with Power Manager.
+- **Wind turbines**: with [Wind Power](https://www.nexusmods.com/survivallog/mods/136) 0.9.3 or newer installed, the `WindMultiplier` setting changes how much power its turbines make, like `SolarMultiplier` does for solar panels. With Wind Power 0.9.4 or newer, `SmogOutput` gives Heavy Smog some wind, so the turbines make power there too. Without Wind Power these settings do not show.
 - **Clear messages**: after each press a line says what happened. When the panel is closed, messages such as auto-refuel and load shedding show as pop-ups.
 - **Game hotkeys paused**: the game's hotkeys are off while the panel is open and come back when it closes.
-- **UI size**: Power Manager's own `UiScale` under Interface sets the size of the panel, from 75% to 200%. At 0, the default, it follows Exiled's Toolkit's UI size.
+- **UI size**: the `UiScale` setting under Interface sets the size of the panel, from 75% to 200%. At 0, the default, it follows Exiled's Toolkit's UI size.
 - **Log file**: every press and what came of it is written to `BepInEx\power-manager.log`.
 
-Every action is the game's: the same start, stop, auto-start, refuel and switch the game's menus use. Refuelling uses the items up, as if you had put them in by hand.
+Every button does the same start, stop, auto-start, refuel or switch that the game's menus do. Refuelling uses the items up, as if you had put them in by hand.
 
-Power Manager writes nothing into your save file. Which devices are low priority is kept for each save in `BepInEx\config\com.dev.survivallog.powermanager.devices.txt`. You can remove the mod at any time; generators and devices stay as they are.
+Power Manager writes nothing into your save file. Which devices are low priority is kept for each save in `BepInEx\config\com.dev.survivallog.powermanager.devices.txt`. You can remove the mod at any time, and generators and devices stay as they are.
 
 ## Hotkeys
 
@@ -40,7 +40,7 @@ The mod's panel and messages follow the game's language: English or Simplified C
 
 ## Known issues and limits
 
-- Stopping a generator also turns its auto-start off. This is the game's rule; turn auto-start back on in the panel.
+- Stopping a generator also turns its auto-start off. The game does this, so turn auto-start back on in the panel afterwards.
 - While the game holds its power switches (during some story events), nothing can be switched and the panel says so.
 - Devices that Defense Manager powers are shown but cannot be switched or marked low priority here.
 - A low-priority device you switch back on while the battery is still low is switched off again. Mark it normal priority to keep it on.
@@ -50,7 +50,7 @@ The mod's panel and messages follow the game's language: English or Simplified C
 
 ## Requirements
 
-- Survival Log 1.1.20719. Built and tested on this version; a game update can break it until the mod is updated.
+- Survival Log 1.1.20719. Built and tested on this version. A game update can break it until the mod is updated.
 - The [BepInEx Pack for Survival Log](https://www.nexusmods.com/survivallog/mods/12), the BepInEx 6 (IL2CPP) build for the game.
 - [Exiled's Toolkit](https://github.com/AnExiledDev/SurvivalLog-ExiledToolkit) 0.19.0 or newer. Power Manager does not load without it. It keeps the panel key quiet while you type, shows messages as pop-ups while the panel is closed, applies settings changed on the Mod Manager's Mods screen without a restart, and lays out the HUD's tool buttons.
 - Optional: [Mod Manager](https://www.nexusmods.com/survivallog/mods/73). With it, you can change every setting in game on its Mods screen and see what each one does, without opening the config file.
@@ -70,15 +70,15 @@ If you use Game Rules or Machine Speed, update them to 0.7.0 or newer too: their
 
 Delete `PowerManager.dll` from the `BepInEx\plugins` folder. For a clean slate, also delete `BepInEx\config\com.dev.survivallog.powermanager.cfg`, `BepInEx\config\com.dev.survivallog.powermanager.devices.txt` and `BepInEx\power-manager.log`.
 
-Devices the mod switched off to save the battery stay off; switch them on from the game's power panel.
+Devices the mod switched off to save the battery stay off. Switch them back on from the game's power panel.
 
 ## Configuration
 
-Settings live in `BepInEx\config\com.dev.survivallog.powermanager.cfg`, created the first time the game starts with the mod. Change them in game on the Mod Manager's Mods screen, or edit the file while the game is closed. Changed on the Mods screen, every setting takes effect at once. With Exiled's Toolkit 0.17.0 or newer, each world can keep its own power settings: every setting in the Power and Solar sections, plus `GeneratorEfficiency` and `FuelBurn`. Pick them for a new world in Customizable Difficulty, or, while you play, change them for that world alone on the Mods screen. Each setting in the cfg file is explained in English and Simplified Chinese. See [CONFIG.md](CONFIG.md) for every setting.
+Settings live in `BepInEx\config\com.dev.survivallog.powermanager.cfg`, created the first time the game starts with the mod. Change them in game on the Mod Manager's Mods screen, or edit the file while the game is closed. Every setting you change on the Mods screen takes effect at once. With Exiled's Toolkit 0.17.0 or newer, each world can keep its own power settings: every setting in the Power and Solar sections, plus `GeneratorEfficiency` and `FuelBurn`. Pick them for a new world in Customizable Difficulty, or, while you play, change them for that world alone on the Mods screen. Each setting in the cfg file is explained in English and Simplified Chinese. See [CONFIG.md](CONFIG.md) for every setting.
 
 ## Troubleshooting
 
-Check `BepInEx\LogOutput.log` for `===== Power Manager 0.5.0 started, panel key None, battery 1x the game's`. The same line, plus one for every press and what came of it, is in `BepInEx\power-manager.log`, which survives restarts.
+Check `BepInEx\LogOutput.log` for `===== Power Manager 0.5.1 started, panel key None, battery 1x the game's`. The same line, plus one for every press and what came of it, is in `BepInEx\power-manager.log`, which survives restarts.
 
 If the panel key does nothing, check that you set one in the config (it is unbound by default), that you are in a loaded game past the prologue, that you are not typing in a text box, and that no other mod uses the same key. The HUD button works either way.
 
@@ -88,7 +88,7 @@ If Refuel adds nothing, open the Fuel tab: only items on the list are used, and 
 
 Found a bug, have an idea, or something feels off? Come say so on the Core Directive Discord: https://discord.gg/trTsyxUFqg . When reporting a bug, attach `BepInEx\LogOutput.log` and `BepInEx\power-manager.log`.
 
-To reach me directly, message `exiled.dev` on Discord; you can find me in the [official Survival Log Discord](https://discord.gg/MZGg4gQAUe). I'm also on X as [@AnExiledDev](https://x.com/AnExiledDev).
+To reach me directly, message `exiled.dev` on Discord. You can find me in the [official Survival Log Discord](https://discord.gg/MZGg4gQAUe). I'm also on X as [@AnExiledDev](https://x.com/AnExiledDev).
 
 ## Build
 

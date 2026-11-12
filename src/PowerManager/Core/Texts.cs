@@ -13,11 +13,11 @@ public static class Texts
     public static readonly Phrase Stopped = new("Stopped {0}.", "已关闭{0}。");
     public static readonly Phrase StoppedAutoOff = new("Stopped {0}. Stopping a generator also turns its auto-start off.", "已关闭{0}。关闭发电机时，它的自动启动也会关闭。");
     public static readonly Phrase NoFuel = new("{0} has no fuel.", "{0}没有燃料。");
-    public static readonly Phrase Locked = new("The game is holding the power switches right now.", "游戏此刻锁定了电源开关。");
+    public static readonly Phrase Locked = new("The game has locked the power switches for now.", "游戏暂时锁定了电源开关。");
     public static readonly Phrase GeneratorGone = new("That generator is gone.", "这台发电机已经不在了。");
     public static readonly Phrase AutoOn = new("Auto-start on for {0}: it starts below {1}% battery.", "{0}的自动启动已开启：电量低于 {1}% 时启动。");
     public static readonly Phrase AutoOff = new("Auto-start off for {0}.", "{0}的自动启动已关闭。");
-    public static readonly Phrase NothingToStart = new("No generator with fuel is waiting to start.", "没有可启动的有燃料发电机。");
+    public static readonly Phrase NothingToStart = new("There is no stopped generator with fuel to start.", "没有停着且有燃料、可以启动的发电机。");
     public static readonly Phrase NothingToStop = new("No generator is running.", "没有正在运行的发电机。");
     public static readonly Phrase NoGenerators = new("No fuel generators at home.", "家里没有燃料发电机。");
     public static readonly Counted StartingAll = new(new("Starting 1 generator.", "正在启动 {0} 台发电机。"), new("Starting {0} generators.", "正在启动 {0} 台发电机。"));
@@ -28,32 +28,32 @@ public static class Texts
     // Fuel.
     public static readonly Phrase AlreadyFull = new("{0} is already full.", "{0}已经加满。");
     public static readonly Phrase AllFull = new("Every generator is full.", "所有发电机都已加满。");
-    public static readonly Phrase NoFuelInStorage = new("No fuel from your fuel list in home storage.", "家中储物里没有燃料列表中的燃料。");
+    public static readonly Phrase NoFuelInStorage = new("Home storage has nothing from your fuel list.", "家中储物里没有燃料列表中的物品。");
 
     /// <summary>{0} is how many, {1} the generator.</summary>
     public static readonly Counted Refuelled = new(new("Added 1 fuel to {1}.", "已为{1}添加 {0} 个燃料。"), new("Added {0} fuel to {1}.", "已为{1}添加 {0} 个燃料。"));
 
     public static readonly Counted RefuelledRanOut = new(
-        new("Added 1 fuel to {1}, then ran out of fuel from your list.", "已为{1}添加 {0} 个燃料，之后燃料列表中的燃料用完了。"),
-        new("Added {0} fuel to {1}, then ran out of fuel from your list.", "已为{1}添加 {0} 个燃料，之后燃料列表中的燃料用完了。"));
+        new("Added 1 fuel to {1}, then home storage ran out of fuel from your list.", "已为{1}添加 {0} 个燃料，之后家中储物里燃料列表中的物品用完了。"),
+        new("Added {0} fuel to {1}, then home storage ran out of fuel from your list.", "已为{1}添加 {0} 个燃料，之后家中储物里燃料列表中的物品用完了。"));
 
     public static readonly Counted AutoRefuelled = new(new("Auto-refuel: added 1 fuel to {1}.", "自动加燃料：已为{1}添加 {0} 个燃料。"), new("Auto-refuel: added {0} fuel to {1}.", "自动加燃料：已为{1}添加 {0} 个燃料。"));
-    public static readonly Phrase AutoNoFuel = new("Auto-refuel: {0} is low, and there is no fuel from your fuel list in home storage.", "自动加燃料：{0}燃料不足，家中储物里没有燃料列表中的燃料。");
+    public static readonly Phrase AutoNoFuel = new("Auto-refuel: {0} is low on fuel, and home storage has nothing from your fuel list.", "自动加燃料：{0}燃料不足，家中储物里没有燃料列表中的物品。");
     public static readonly Phrase FuelListSaved = new("Fuel list saved.", "燃料列表已保存。");
 
     // Devices.
     public static readonly Phrase SwitchedOn = new("{0} switched on.", "{0}已开启。");
     public static readonly Phrase SwitchedOff = new("{0} switched off.", "{0}已关闭。");
-    public static readonly Phrase NotSwitched = new("The game kept {0} as it was.", "游戏没有切换{0}。");
+    public static readonly Phrase NotSwitched = new("The game would not switch {0}.", "游戏没有切换{0}。");
     public static readonly Phrase DeviceGone = new("That device is gone.", "这个设备已经不在了。");
-    public static readonly Phrase Managed = new("Defense Manager runs the power of {0}.", "{0}的供电由 Defense Manager 控制。");
-    public static readonly Phrase MarkedLow = new("{0} is low priority now: it is switched off first when the battery runs low.", "{0}现在是低优先级：电量不足时最先关闭。");
+    public static readonly Phrase Managed = new("Defense Manager controls the power to {0}.", "{0}的供电由 Defense Manager 控制。");
+    public static readonly Phrase MarkedLow = new("{0} is low priority now. It switches off when the battery runs low during a power cut.", "{0}现在是低优先级，停电期间电量不足时会关闭。");
     public static readonly Phrase MarkedNormal = new("{0} is normal priority now.", "{0}现在是普通优先级。");
     public static readonly Counted Shedding = new(new("Battery low: switching off 1 low-priority device.", "电量低：正在关闭 {0} 个低优先级设备。"), new("Battery low: switching off {0} low-priority devices.", "电量低：正在关闭 {0} 个低优先级设备。"));
     public static readonly Counted Restoring = new(new("Switching 1 low-priority device back on.", "正在重新开启 {0} 个低优先级设备。"), new("Switching {0} low-priority devices back on.", "正在重新开启 {0} 个低优先级设备。"));
-    public static readonly Phrase NoSave = new("Device priorities are kept per save, and this game has no save yet. Save the game first.", "设备优先级按存档保存，而这局游戏还没有存档。请先保存游戏。");
+    public static readonly Phrase NoSave = new("Device priorities are kept for each save, and this game has not been saved yet. Save the game first.", "设备优先级按存档保存，而这局游戏还没有保存过。请先保存游戏。");
     public static readonly Phrase Unreadable = new("The devices file could not be read, so nothing was changed. See " + Log + ".", "无法读取设备文件，因此没有做任何更改。详见 " + Log + "。");
-    public static readonly Phrase NotSaved = new("It could not be written to the devices file, so it lasts until the game is closed.", "设置无法写入设备文件，只在关闭游戏前有效。");
+    public static readonly Phrase NotSaved = new("Device priorities could not be saved to the devices file, so they only last until you close the game.", "设备优先级无法保存到设备文件，只在关闭游戏前有效。");
 
     // Anywhere.
     public static readonly Phrase NoGame = new("Load a game first.", "请先载入游戏。");
@@ -63,10 +63,10 @@ public static class Texts
 
     public static readonly Phrase Failed = new("Power Manager failed, see " + Log + ".", "Power Manager 出错，详见 " + Log + "。");
     public static readonly Phrase Saved = new("Setting saved.", "设置已保存。");
-    public static readonly Phrase SavedAtRestart = new("Setting saved. It takes effect at the next game start.", "设置已保存，下次启动游戏时生效。");
+    public static readonly Phrase SavedAtRestart = new("Setting saved. It takes effect the next time you start the game.", "设置已保存，下次启动游戏时生效。");
     public static readonly Phrase UpdateOldMods = new(
-        "Update {0} to 0.7.0 or newer. Until then, Power Manager does not apply the power settings that moved to it from there.",
-        "请将 {0} 更新到 0.7.0 或更高版本。在此之前，Power Manager 不会应用从那里移过来的电力设置。");
+        "Update {0} to 0.7.0 or newer. Until you do, Power Manager does not apply the power settings that moved here from {0}.",
+        "请将 {0} 更新到 0.7.0 或更高版本。在此之前，Power Manager 不会应用从 {0} 移过来的电力设置。");
 
     /// <summary>The words page.js draws the panel and the HUD button's tip with, by the key it looks them up by.</summary>
     public static readonly IReadOnlyList<(string Key, Phrase Phrase)> Page = new (string, Phrase)[]
@@ -79,14 +79,14 @@ public static class Texts
         ("battery", new("Battery", "蓄电池")),
         ("stored", new("{0} of {1} stored", "已储存 {0} / {1}")),
         ("genCons", new("Making {0}, using {1} every 10 minutes", "每 10 分钟发电 {0}，用电 {1}")),
-        ("fcCity", new("City power is on, the battery is not in use.", "城市供电正常，蓄电池未在使用。")),
+        ("fcCity", new("City power is on, so the battery is not in use.", "城市供电正常，所以蓄电池没有在用。")),
         ("fcNoBattery", new("No battery built.", "还没有建造蓄电池。")),
         ("fcSteady", new("Holding steady.", "电量保持不变。")),
         ("fcDraining", new("Empty in {0}", "{0}后耗尽")),
         ("fcCharging", new("Full in {0}", "{0}后充满")),
         ("fcEmpty", new("Empty.", "已耗尽。")),
         ("fcFull", new("Full.", "已充满。")),
-        ("locked", new("The game is holding the power switches right now.", "游戏此刻锁定了电源开关。")),
+        ("locked", new("The game has locked the power switches for now.", "游戏暂时锁定了电源开关。")),
         ("hours", new("{0} h {1} min", "{0} 小时 {1} 分钟")),
         ("minutes", new("{0} min", "{0} 分钟")),
         ("days", new("{0} d {1} h", "{0} 天 {1} 小时")),
@@ -107,7 +107,7 @@ public static class Texts
         ("stopAll", new("Stop all", "全部关闭")),
         ("refuelAll", new("Refuel all", "全部加燃料")),
         ("autoAllOn", new("Auto-start all", "全部自动启动")),
-        ("autoAllOff", new("Auto-start none", "全部取消自动启动")),
+        ("autoAllOff", new("Auto-start off for all", "全部取消自动启动")),
         ("devices", new("Devices", "用电设备")),
         ("noDevices", new("No powered devices at home yet.", "家里还没有用电设备。")),
         ("perTick", new("{0} per 10 min", "每 10 分钟 {0}")),
@@ -115,7 +115,7 @@ public static class Texts
         ("off", new("Off", "关")),
         ("low", new("Low priority", "低优先级")),
         ("shed", new("Switched off to save the battery", "为节省电量已关闭")),
-        ("managed", new("Run by Defense Manager", "由 Defense Manager 控制")),
+        ("managed", new("Controlled by Defense Manager", "由 Defense Manager 控制")),
         ("shedNote", new("Low-priority devices switch off below {0}% battery during a power cut, and back on at {1}%.", "停电期间电量低于 {0}% 时关闭低优先级设备，回到 {1}% 时重新开启。")),
         ("shedOffNote", new("Load shedding is off. Turn it on in Settings.", "负载削减已关闭。可在设置中开启。")),
         ("fuelOrder", new("Fuel order", "燃料顺序")),
@@ -128,19 +128,19 @@ public static class Texts
         ("addFuel", new("Add", "添加")),
         ("otherFuel", new("Add fuel", "添加燃料")),
         ("noOtherFuel", new("Every burnable item is already on the fuel list.", "所有可燃物品都已在燃料列表中。")),
-        ("emptyOrder", new("The fuel list is empty, so nothing is used for refuelling.", "燃料列表为空，加燃料时不会使用任何物品。")),
+        ("emptyOrder", new("The fuel list is empty, so refuelling has nothing to use.", "燃料列表为空，加燃料时没有物品可用。")),
         ("setControls", new("Controls", "控制")),
         ("setKey", new("Open the panel", "打开面板")),
-        ("setKeyDesc", new("Key that opens and closes this window.", "打开和关闭此窗口的按键。")),
+        ("setKeyDesc", new("The key that opens and closes this panel.", "打开和关闭此面板的按键。")),
         ("keyNone", new("None", "无")),
         ("setGenerators", new("Generators", "发电机")),
         ("setAutoRefuel", new("Auto-refuel", "自动加燃料")),
         ("setAutoRefuelDesc", new("Fill a running generator, or one set to auto-start, from home storage when its fuel runs low.", "运行中或设为自动启动的发电机燃料不足时，从家中储物自动加满。")),
         ("setAutoMinutes", new("Refuel below", "低于此时间时加燃料")),
-        ("setAutoMinutesDesc", new("Auto-refuel when a generator has less than this many game minutes of fuel.", "发电机剩余燃料少于这么多游戏分钟时自动加燃料。")),
+        ("setAutoMinutesDesc", new("Auto-refuel when a generator has less than this many in-game minutes of fuel left.", "发电机剩余燃料少于这么多游戏分钟时自动加燃料。")),
         ("setShedding", new("Load shedding", "负载削减")),
-        ("setShedBelow", new("Shed below", "低于此电量时削减")),
-        ("setShedBelowDesc", new("During a power cut, switch off low-priority devices below this battery level. 0 turns it off.", "停电期间电量低于此值时关闭低优先级设备。0 为关闭。")),
+        ("setShedBelow", new("Battery level", "电量")),
+        ("setShedBelowDesc", new("During a power cut, low-priority devices switch off below this battery level. 0 turns load shedding off.", "停电期间电量低于此值时关闭低优先级设备。0 为关闭负载削减。")),
         ("percent", new("{0}%", "{0}%")),
         ("keyClose", new("{0} or Esc to close", "按 {0} 或 Esc 关闭")),
         ("escClose", new("Esc to close", "按 Esc 关闭")),

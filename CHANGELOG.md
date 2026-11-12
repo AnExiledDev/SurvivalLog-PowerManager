@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.1
+
+- Clearer wording in the settings and on screen.
+- Made for Survival Log 1.1.20719.
+
 ## 0.5.0
 
 - With [Wind Power](https://www.nexusmods.com/survivallog/mods/136) 0.9.4 or newer installed, a new `SmogOutput` setting gives Heavy Smog some wind, so the turbines turn and make power there, the way `BadWeatherOutput` does for solar panels in storms. It is a share of a Clear day's wind, takes effect at once, and each world can keep its own. It starts at 0, so nothing changes until you set it.
@@ -7,12 +12,12 @@
 
 ## 0.4.0
 
-- With [Wind Power](https://www.nexusmods.com/survivallog/mods/136) 0.9.3 or newer installed, a new `WindMultiplier` setting makes its wind turbines make more or less power, the way `SolarMultiplier` does for solar panels. It takes effect at once, and each world can keep its own. Without Wind Power the setting does not show.
+- With [Wind Power](https://www.nexusmods.com/survivallog/mods/136) 0.9.3 or newer installed, a new `WindMultiplier` setting changes how much power its wind turbines make, the way `SolarMultiplier` does for solar panels. It takes effect at once, and each world can keep its own. Without Wind Power the setting does not show.
 - Made for Survival Log 1.1.20719.
 
 ## 0.3.1
 
-- Now uses Exiled's Toolkit for its shared parts, so it needs Exiled's Toolkit 0.19.0 or newer.
+- Now needs Exiled's Toolkit 0.19.0 or newer, because parts of the mod moved into the Toolkit.
 - Made for Survival Log 1.1.20719.
 
 ## 0.3.0
@@ -26,7 +31,7 @@
 
 - **Warning:** needs Exiled's Toolkit 0.12.0 or newer. Update the Toolkit first.
 - With Game Rules or Machine Speed older than 0.7.0 installed, Power Manager now leaves their power settings to them and a message asks you to update them. Before, both mods applied the same settings, so device power, battery size and generator settings counted twice.
-- A carried-over setting the mod could not read is now logged as not carried.
+- If a setting carried over from Game Rules or Machine Speed cannot be read, the log now says it was not carried over.
 - Made for Survival Log 1.1.20151.
 
 ## 0.2.1
@@ -50,7 +55,7 @@
 - Start and stop every fuel generator from the panel, one at a time or all at once, and set each one's auto-start.
 - Refuel generators from home storage in a fuel order you set, junk paper first. Items left off the list are never burned.
 - Auto-refuel, off by default, tops up a running generator, or one set to auto-start, when its fuel runs low.
-- A battery forecast shows how long until the battery is empty or full at the current use.
+- A battery forecast shows how long until the battery is empty or full at the current rate.
 - Load shedding: devices you mark low priority switch off when the battery runs low during a power cut, and back on once it recovers.
 - The power and solar settings from Game Rules and the generator settings from Machine Speed now live here. Values you changed in those mods are carried over the first time the game starts with Power Manager.
 - Made for Survival Log 1.1.19611.
