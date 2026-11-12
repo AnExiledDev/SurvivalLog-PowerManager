@@ -59,8 +59,8 @@ internal static class RulePatches
         log(rules.ChangesDevicePower ? $"devices use {rules.DevicePowerUse:0.##}x the game's power" : "devices use the game's power");
         log(rules.NoPowerCut ? "the city power is never cut"
             : rules.PowerCutDelay > 0 ? $"the city power cut comes {rules.PowerCutDelay} day(s) later than in the game"
-            : "the city power cut comes as in the game");
-        log(rules.NoBlackoutPanic ? "blackouts no longer bring Blackout panic" : "blackouts bring Blackout panic as in the game");
+            : "the city power cut comes when it normally does");
+        log(rules.NoBlackoutPanic ? "blackouts no longer bring Blackout panic" : "blackouts bring Blackout panic like they normally do");
     }
 
     /// <summary>Called on the main thread at start and after each change of FuelBurn.</summary>
@@ -134,7 +134,7 @@ internal static class RulePatches
         }
         catch (Exception ex)
         {
-            _hooks?.Fail("checking the power cut, it comes as in the game", ex);
+            _hooks?.Fail("checking the power cut, it comes when it normally does", ex);
 
             return true;
         }
@@ -167,7 +167,7 @@ internal static class RulePatches
         }
         catch (Exception ex)
         {
-            _hooks?.Fail("checking Blackout panic, it works as in the game", ex);
+            _hooks?.Fail("checking Blackout panic, it works like it normally does", ex);
 
             return true;
         }
