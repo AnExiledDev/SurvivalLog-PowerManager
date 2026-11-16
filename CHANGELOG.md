@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.3
+
+- The battery and generator numbers are now written once after the game starts, and again when you change a setting. Before, the mod checked them every two seconds the whole time you played.
+- Made for Survival Log 1.1.21271.
+
 ## 0.5.2
 
 - Clearer wording in the log.

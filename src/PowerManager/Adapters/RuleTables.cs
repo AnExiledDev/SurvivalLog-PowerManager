@@ -9,9 +9,9 @@ namespace PowerManagerMod.Adapters;
 /// <summary>
 /// Writes the battery and generator numbers into the game's electrical table (Config_FurnitureElectrical). The power
 /// manager adds up every battery's Capacity for the base's storage, and every generation step reads a generator's
-/// BasePower, so a number written there holds everywhere the game shows or uses it. No hook is needed. The table is
-/// checked every few seconds so one the game loads again (a reload builds fresh rows with its own numbers) is written
-/// again; a check of a table already written costs nothing but a pointer and a count.
+/// BasePower, so a number written there holds everywhere the game shows or uses it. No hook is needed. The game builds
+/// the table once, when it starts, so it is written once: tried every two seconds until the table has loaded, then
+/// again only when a setting changes (a world's own battery value comes in as a setting change).
 /// </summary>
 internal sealed class RuleTables
 {
@@ -32,6 +32,7 @@ internal sealed class RuleTables
     private Il2CppSystem.Collections.Generic.Dictionary<int, Config_FurnitureElectrical>? _walked;
     private int _walkedCount;
     private float _nextCheckAt;
+    private bool _isWritten;
     private bool _hasReportedFailure;
 
     /// <summary>
@@ -54,12 +55,16 @@ internal sealed class RuleTables
 
         _efficiency = efficiency;
         _isChanged = true;
-        _nextCheckAt = 0f;
+        CheckSoon();
         _log(efficiency.IsGameAmount ? "generators make the game's power from their fuel" : $"generators make {efficiency.Value:0.##}x the game's power from their fuel");
     }
 
     /// <summary>Called on the main thread after a change of BatteryMultiplier, so the next frame writes it.</summary>
-    public void CheckSoon() => _nextCheckAt = 0f;
+    public void CheckSoon()
+    {
+        _isWritten = false;
+        _nextCheckAt = 0f;
+    }
 
     /// <summary>
     /// Called by the game each time it adds up the batteries' capacity, just before it does. Writes the battery rows
@@ -74,15 +79,16 @@ internal sealed class RuleTables
         Check();
     }
 
+    /// <summary>Returns at once once the table is written, until a setting changes.</summary>
     public void Tick(float now)
     {
-        if (now < _nextCheckAt) return;
+        if (_isWritten || now < _nextCheckAt) return;
 
         _nextCheckAt = now + CheckSeconds;
 
         try
         {
-            Check();
+            _isWritten = Check();
         }
         catch (Exception ex)
         {
@@ -93,25 +99,26 @@ internal sealed class RuleTables
         }
     }
 
-    private void Check()
+    /// <summary>True when the table holds the settings' numbers, or there is nothing to write; false while the table is not loaded.</summary>
+    private bool Check()
     {
         var requested = _readBattery();
 
         if (!requested.Equals(_battery.Requested)) UseBattery(Multiplier.From(requested, LeastBattery, MostBattery));
 
         // Nothing to write until a setting leaves the game's numbers; after that, a return to 1 writes the game's back.
-        if (_battery.IsGameAmount && _efficiency.IsGameAmount && _batteries.Count == 0 && _generators.Count == 0) return;
+        if (_battery.IsGameAmount && _efficiency.IsGameAmount && _batteries.Count == 0 && _generators.Count == 0) return true;
 
         var rows = GameSingleton.Existing<ConfigManager>()?._Config_FurnitureElectrical_Dict;
 
-        if (rows == null) return;
+        if (rows == null) return false;
 
         var count = rows.Count;
 
-        if (count == 0) return;
+        if (count == 0) return false;
 
         // Every row was written when this table was last walked, and walking it again makes a new object per row.
-        if (!_isChanged && _walked != null && _walked.Pointer == rows.Pointer && count == _walkedCount) return;
+        if (!_isChanged && _walked != null && _walked.Pointer == rows.Pointer && count == _walkedCount) return true;
 
         var batteries = 0;
         var generators = 0;
@@ -138,6 +145,8 @@ internal sealed class RuleTables
 
         if (batteries > 0) _log($"{batteries} battery types now hold {_battery.Value:0.##}x the game's power");
         if (generators > 0) _log($"{generators} generator types now make {_efficiency.Value:0.##}x the game's power");
+
+        return true;
     }
 
     private void UseBattery(Multiplier battery)

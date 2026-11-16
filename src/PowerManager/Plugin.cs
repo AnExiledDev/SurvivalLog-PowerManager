@@ -23,7 +23,7 @@ namespace PowerManagerMod;
 public sealed class Plugin : BasePlugin
 {
     private const string Guid = "com.dev.survivallog.powermanager";
-    private const string Version = "0.5.2";
+    private const string Version = "0.5.3";
 
     /// <summary>The Wind setting, as the turbine multiplier Wind Power reads once a second.</summary>
     private static volatile float _windMultiplier = 1f;
