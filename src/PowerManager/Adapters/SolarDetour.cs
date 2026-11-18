@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using BepInEx;
+using ExiledToolkit;
 using GameCore.HotUpdate;
 using GameCore.HotUpdate.Battle.Logic;
 using PowerManagerMod.Core;
@@ -17,7 +18,8 @@ namespace PowerManagerMod.Adapters;
 /// private struct through a hidden pointer, which Harmony cannot patch safely, so it is detoured natively with the
 /// hook library BepInEx already ships (core/dobby.dll). Its first 15 bytes are three `mov [rsp+x],reg` saves with no
 /// relative operand; the detour is only placed when those exact bytes are there, so a game update or another hook
-/// leaves the panels alone instead of breaking them.
+/// leaves the panels alone instead of breaking them. The hook is reported to Mod Manager, so its code check knows the
+/// hook is this mod's.
 /// </summary>
 internal static unsafe class SolarDetour
 {
@@ -98,6 +100,7 @@ internal static unsafe class SolarDetour
             }
 
             _original = Marshal.GetDelegateForFunctionPointer<CalcSolarOutput>(original);
+            Claims.Hooked(Plugin.Guid, typeof(PowerManager), "CalcSolarOutput");
         }
         catch (Exception ex)
         {

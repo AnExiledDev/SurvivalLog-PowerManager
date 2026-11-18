@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.4
+
+- Mod Manager's Conflicts tab can now see what Power Manager changes in the game, like the battery and generator numbers and the solar panel code it hooks directly, so it can show when another mod changes the same things.
+- Now needs Exiled's Toolkit 0.25.0 or newer.
+- Made for Survival Log 1.1.21271.
+
 ## 0.5.3
 
 - The battery and generator numbers are now written once after the game starts, and again when you change a setting. Before, the mod checked them every two seconds the whole time you played.

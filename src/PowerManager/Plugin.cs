@@ -22,8 +22,8 @@ namespace PowerManagerMod;
 [BepInDependency(WindLink.Guid, BepInDependency.DependencyFlags.SoftDependency)]
 public sealed class Plugin : BasePlugin
 {
-    private const string Guid = "com.dev.survivallog.powermanager";
-    private const string Version = "0.5.3";
+    internal const string Guid = "com.dev.survivallog.powermanager";
+    private const string Version = "0.5.4";
 
     /// <summary>The Wind setting, as the turbine multiplier Wind Power reads once a second.</summary>
     private static volatile float _windMultiplier = 1f;
@@ -33,7 +33,7 @@ public sealed class Plugin : BasePlugin
 
     /// <summary>Exiled's Toolkit: its shared helpers, toasts, live settings, UI size and typing check all come from it.</summary>
     private const string ToolkitGuid = "com.dev.survivallog.exiledtoolkit";
-    private const string ToolkitVersion = ">=0.19.0";
+    private const string ToolkitVersion = ">=0.25.0";
 
     private const string LogFileName = "power-manager.log";
 

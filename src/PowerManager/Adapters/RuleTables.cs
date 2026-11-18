@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GameCore.HotUpdate;
+using ExiledToolkit;
 using ExiledToolkit.Game;
 using PowerManagerMod.Core;
 
@@ -11,7 +12,8 @@ namespace PowerManagerMod.Adapters;
 /// manager adds up every battery's Capacity for the base's storage, and every generation step reads a generator's
 /// BasePower, so a number written there holds everywhere the game shows or uses it. No hook is needed. The game builds
 /// the table once, when it starts, so it is written once: tried every two seconds until the table has loaded, then
-/// again only when a setting changes (a world's own battery value comes in as a setting change).
+/// again only when a setting changes (a world's own battery value comes in as a setting change). Each number written
+/// is reported to Mod Manager, and one back at the game's counts as put back.
 /// </summary>
 internal sealed class RuleTables
 {
@@ -170,6 +172,7 @@ internal sealed class RuleTables
         if (BatteryCapacity.Next(type, current, last, _battery) is not { } next) return false;
 
         _batteries[id] = next;
+        Report(id, nameof(Config_FurnitureElectrical.Capacity), next);
 
         if (next.Written == current) return false;
 
@@ -187,11 +190,20 @@ internal sealed class RuleTables
         var next = TableValue.Next(current, last, _efficiency);
 
         _generators[id] = next;
+        Report(id, nameof(Config_FurnitureElectrical.BasePower), next);
 
         if (next.Written == current) return false;
 
         row._BasePower_k__BackingField = next.Written;
 
         return true;
+    }
+
+    private static void Report(int id, string field, TableValue value)
+    {
+        const string table = nameof(Config_FurnitureElectrical);
+
+        if (value.Written == value.Game) Claims.PutBack(Plugin.Guid, table, id, field);
+        else Claims.Wrote(Plugin.Guid, table, id, field, value.Written);
     }
 }
